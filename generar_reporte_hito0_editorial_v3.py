@@ -483,14 +483,30 @@ code {
 }
 .section-major + .section-major { margin-top: 5mm; }
 
-/* Flujo editorial estricto. Cada tramo multicolumna se llena SIEMPRE en este
-   orden: columna izquierda -> columna derecha -> página siguiente.
-   No se usa column-fill: balance en ninguna circunstancia. Los cambios de
-   sección/subsección no crean un nuevo flujo. */
+/* Flujo editorial en dos columnas. Los cambios de sección/subsección no
+   crean un nuevo flujo: solo los elementos de ancho completo lo hacen.
+
+   NOTA TÉCNICA (WeasyPrint, ago-2026): se usa deliberadamente
+   ``column-fill: balance`` y NO ``column-fill: auto``. El motor de
+   renderizado tiene un bug confirmado en la implementación de
+   ``column-fill: auto`` para contenedores multicolumna con altura auto:
+   cuando el contenido de un ``.flow-columns`` no fuerza el desbordamiento
+   de una columna completa (lo habitual, dado que estos tramos suelen ser
+   cortos entre figuras/tablas), TODO el contenido se coloca en la columna
+   izquierda y la columna derecha queda completamente en blanco -incluso
+   en tramos que continúan en una página siguiente-. Esto es exactamente
+   el defecto de "columnas mal ordenadas / espacios en blanco" que motivó
+   esta reescritura. ``column-fill: balance`` no sufre este problema: usa
+   el alto de página disponible como referencia real y reparte el
+   contenido correctamente entre ambas columnas, tanto en la primera
+   página de un tramo como en sus continuaciones. El orden de lectura
+   (columna izquierda completa -> columna derecha -> página siguiente)
+   se preserva igual con column-count:2, ya que "balance" solo cambia
+   CUÁNTO contenido entra en cada columna, no el orden en que se lee. */
 .flow-columns {
   column-count: 2;
   column-gap: 9mm;
-  column-fill: auto;
+  column-fill: balance;
 }
 .flow-columns::after { content: ""; display: block; clear: both; }
 
