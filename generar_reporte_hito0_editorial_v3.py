@@ -87,14 +87,38 @@ SUPPORTED_IMAGES = {".png", ".jpg", ".jpeg", ".webp", ".svg"}
 # Figuras cuyo contenido (multipanel, ejes, texto denso) no se lee bien
 # comprimido en el ancho de una sola columna narrativa (~85mm): se fuerzan
 # a ancho completo ("hero") aunque su relación de aspecto no lo sugiera.
-# La Figura 1 se incluye aquí también para que deje de ocupar una página
-# dedicada completa (con espacio en blanco alrededor) y en su lugar fluya
-# dentro del cuerpo, igual que las Figuras 2 y 3.
-FORCE_HERO_FIGURE_NUMBERS = {1, 4, 5, 6, 7, 9, 11, 12, 14, 15, 16}
+# figura-01 se incluye también para que deje de ocupar una página dedicada
+# completa (con espacio en blanco alrededor) y en su lugar fluya dentro
+# del cuerpo, igual que las figuras 2 y 3.
+#
+# Se identifican por el slug descriptivo del nombre de archivo (la parte
+# después del número, p. ej. "recorrido-general" en "figura-01-recorrido-
+# general.png") y NO por su número de figura: el número cambia cada vez
+# que el Markdown se reordena o renumera (ya ha ocurrido varias veces en
+# este documento), mientras que el slug identifica la figura de forma
+# estable entre versiones.
+FORCE_HERO_FIGURE_SLUGS = {
+    "recorrido-general",
+    "arquitectura-conceptual",
+    "instrumentos",
+    "distribucion-puntaje",
+    "focalizacion-rasch",
+    "mapa-persona-item-rasch",
+    "informacion-sem-rasch",
+    "estructura-empirica",
+    "pcm-mapa-grupo-umbrales",
+    "parametros-paso-pcm2",
+    "funcionamiento-categorias-pcm",
+    "triangulacion-juicio-experto",
+    "trazabilidad-refinamiento",
+}
 
 # Tablas que, pese a ser "pequeñas" según la heurística de densidad, se
-# leen mejor a ancho completo por el largo de su contenido textual.
-FORCE_WIDE_TABLE_NUMBERS = {27}
+# leen mejor a ancho completo por el largo de su contenido textual. Se
+# identifican por el texto del título (no por su número, por la misma
+# razón que FORCE_HERO_FIGURE_SLUGS): basta con que el título de la tabla
+# CONTENGA uno de estos textos.
+FORCE_WIDE_TABLE_TITLES = {"estado actual del sistema"}
 
 MASTER_CSS = r"""
 :root {
@@ -1278,10 +1302,10 @@ def transform_figures_positional(soup: BeautifulSoup, root: Tag, image_index: Di
         ratio = image_ratio(target)
         lowname = basename.lower()
         alt = img.get("alt", "").lower()
-        fig_num_match = re.match(r"figura[-_](\d+)", lowname)
-        fig_num = int(fig_num_match.group(1)) if fig_num_match else None
+        slug_match = re.match(r"figura[-_]\d+[-_](.+?)\.\w+$", lowname)
+        fig_slug = slug_match.group(1) if slug_match else None
 
-        if fig_num in FORCE_HERO_FIGURE_NUMBERS:
+        if fig_slug in FORCE_HERO_FIGURE_SLUGS:
             classes.append("hero")
         elif ratio is not None and ratio >= 4.0:
             classes.append("landscape")
@@ -1351,14 +1375,12 @@ def transform_tables(soup: BeautifulSoup, root: Tag) -> None:
         elif isinstance(prev, Tag) and "table-title" in prev.get("class", []):
             before.append(prev)
 
-        table_num = None
+        table_title_text = ""
         for node in before:
             if "table-title" in node.get("class", []):
-                m = re.match(r"^Tabla\s+(\d+)\.", node.get_text(" ", strip=True), flags=re.I)
-                if m:
-                    table_num = int(m.group(1))
+                table_title_text = _normalize_search_text(node.get_text(" ", strip=True))
                 break
-        if table_num in FORCE_WIDE_TABLE_NUMBERS:
+        if any(t in table_title_text for t in FORCE_WIDE_TABLE_TITLES):
             small = False
 
         after = table.find_next_sibling()
