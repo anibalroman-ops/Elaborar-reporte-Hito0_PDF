@@ -2014,7 +2014,7 @@ def tighten_pushed_hero_figures(
     unit_node: Tag,
     pdf_path: Path,
     min_scale: float = 0.52,
-    min_abs_mm: float = 60.0,
+    min_abs_mm: float = 55.0,
     gap_threshold_mm: float = 20.0,
     # Espacio no medible directamente en el render "empujado" (colapso del
     # margen superior de .figure con el margen inferior del párrafo previo,
