@@ -84,6 +84,18 @@ except ImportError:
 
 SUPPORTED_IMAGES = {".png", ".jpg", ".jpeg", ".webp", ".svg"}
 
+# Figuras cuyo contenido (multipanel, ejes, texto denso) no se lee bien
+# comprimido en el ancho de una sola columna narrativa (~85mm): se fuerzan
+# a ancho completo ("hero") aunque su relación de aspecto no lo sugiera.
+# La Figura 1 se incluye aquí también para que deje de ocupar una página
+# dedicada completa (con espacio en blanco alrededor) y en su lugar fluya
+# dentro del cuerpo, igual que las Figuras 2 y 3.
+FORCE_HERO_FIGURE_NUMBERS = {1, 4, 5, 6, 7, 9, 11, 12, 14, 15, 16}
+
+# Tablas que, pese a ser "pequeñas" según la heurística de densidad, se
+# leen mejor a ancho completo por el largo de su contenido textual.
+FORCE_WIDE_TABLE_NUMBERS = {27}
+
 MASTER_CSS = r"""
 :root {
   --teal: #00A499;
@@ -196,8 +208,14 @@ body {
 p {
   margin: 0 0 3.15mm;
   text-align: justify;
-  orphans: 3;
-  widows: 3;
+  /* orphans/widows bajos a propósito: con column-fill:balance, exigir un
+     mínimo alto de líneas por fragmento fuerza a WeasyPrint a mover un
+     párrafo COMPLETO a la columna siguiente en vez de partirlo, lo que
+     deja huecos en blanco al final de la columna anterior. Con 2 se
+     preserva el mínimo tipográfico razonable (nunca 1 sola línea huérfana)
+     sin bloquear el reparto fino entre columnas. */
+  orphans: 2;
+  widows: 2;
 }
 
 strong { font-weight: 700; }
@@ -546,7 +564,10 @@ ul, ol {
 }
 li {
   margin-bottom: 2.1mm;
-  break-inside: avoid;
+  /* auto (no avoid) por la misma razón que orphans/widows arriba: con
+     column-fill:balance, un ítem que no puede partirse fuerza a mover
+     la lista completa a la columna siguiente y deja hueco en blanco. */
+  break-inside: auto;
 }
 li::marker { color: var(--teal); }
 
@@ -1250,8 +1271,11 @@ def transform_figures_positional(soup: BeautifulSoup, root: Tag, image_index: Di
         ratio = image_ratio(target)
         lowname = basename.lower()
         alt = img.get("alt", "").lower()
-        if lowname.startswith("figura-01-") or lowname.startswith("figura_01_"):
-            classes.append("fullpage")
+        fig_num_match = re.match(r"figura[-_](\d+)", lowname)
+        fig_num = int(fig_num_match.group(1)) if fig_num_match else None
+
+        if fig_num in FORCE_HERO_FIGURE_NUMBERS:
+            classes.append("hero")
         elif ratio is not None and ratio >= 4.0:
             classes.append("landscape")
         elif ("-cm-" in lowname or "construct map" in alt or (ratio is not None and ratio >= 2.15)):
@@ -1319,6 +1343,16 @@ def transform_tables(soup: BeautifulSoup, root: Tag) -> None:
                 before.insert(0, prev2)
         elif isinstance(prev, Tag) and "table-title" in prev.get("class", []):
             before.append(prev)
+
+        table_num = None
+        for node in before:
+            if "table-title" in node.get("class", []):
+                m = re.match(r"^Tabla\s+(\d+)\.", node.get_text(" ", strip=True), flags=re.I)
+                if m:
+                    table_num = int(m.group(1))
+                break
+        if table_num in FORCE_WIDE_TABLE_NUMBERS:
+            small = False
 
         after = table.find_next_sibling()
         note = after if isinstance(after, Tag) and "table-note" in after.get("class", []) else None
