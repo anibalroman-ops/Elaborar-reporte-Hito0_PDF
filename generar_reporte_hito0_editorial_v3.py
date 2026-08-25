@@ -1957,6 +1957,144 @@ def pdf_page_count(path: Path) -> int:
     return n
 
 
+# Parámetros del contenedor de página principal (deben reflejar el @page de
+# MASTER_CSS). Se usan para medir, en el PDF ya renderizado, cuánto espacio
+# queda libre al final de una página antes de un elemento de ancho completo.
+_PAGE_TOP_MARGIN_MM = 18.0
+_PAGE_BOTTOM_MARGIN_MM = 19.0
+_PT_PER_MM = 72.0 / 25.4
+
+
+def _find_marker_page(doc: "fitz.Document", marker: str) -> Optional[int]:
+    for pno in range(1, doc.page_count):
+        if doc[pno].search_for(marker):
+            return pno
+    return None
+
+
+def _figure_marker(fig: Tag) -> Optional[str]:
+    caption = fig.find("figcaption")
+    if caption is None:
+        return None
+    m = re.match(r"^(Figura\s+\d+\.)", caption.get_text(" ", strip=True))
+    return m.group(1) if m else None
+
+
+def tighten_pushed_hero_figures(
+    unit_node: Tag,
+    pdf_path: Path,
+    min_scale: float = 0.52,
+    min_abs_mm: float = 60.0,
+    gap_threshold_mm: float = 20.0,
+    # Espacio no medible directamente en el render "empujado" (colapso del
+    # margen superior de .figure con el margen inferior del párrafo previo,
+    # más un margen de seguridad frente a redondeos): se resta del hueco
+    # disponible para no proponer un tamaño que en la práctica no entre.
+    # Calibrado empíricamente contra el documento real (ver notas de commit).
+    safety_mm: float = 16.0,
+) -> List[Tuple[Tag, str]]:
+    """Si una figura .hero queda empujada al inicio de una página y deja un
+    hueco grande al final de la página anterior, reduce el alto máximo de
+    ESA imagen (solo esa, vía un estilo inline) lo justo para que quepa en
+    el hueco disponible, evitando la página con mucho espacio en blanco.
+
+    Nunca reduce una imagen por debajo de ``min_scale`` de su alto ya
+    renderizado ni de ``min_abs_mm``, para no volverla ilegible: si el
+    hueco no alcanza para un tamaño razonable, la figura se deja intacta
+    (mejor un hueco en blanco que un diagrama denso ilegible).
+
+    Devuelve la lista de ``(img_tag, estilo_previo)`` modificados, para que
+    el llamador pueda revertir los que, tras volver a renderizar, resulten
+    no haber alcanzado a moverse a la página anterior (ver
+    ``revert_unplaced_hero_figures``).
+    """
+    doc = fitz.open(pdf_path)
+    top_y = (_PAGE_TOP_MARGIN_MM + 2) * _PT_PER_MM
+    bottom_y = (297 - _PAGE_BOTTOM_MARGIN_MM) * _PT_PER_MM
+
+    changed: List[Tuple[Tag, str]] = []
+    for fig in unit_node.find_all("figure", class_=lambda c: c and "hero" in c):
+        img = fig.find("img")
+        marker = _figure_marker(fig)
+        if img is None or marker is None:
+            continue
+
+        target_page = _find_marker_page(doc, marker)
+        if target_page is None or target_page == 0:
+            continue
+
+        page = doc[target_page]
+        image_info = page.get_image_info()
+        if not image_info:
+            continue
+        img_bbox = image_info[0]["bbox"]
+        if img_bbox[1] > top_y + 10 * _PT_PER_MM:
+            continue  # la imagen no arranca pegada al tope: no fue empujada
+        img_h_mm = (img_bbox[3] - img_bbox[1]) / _PT_PER_MM
+
+        prev_page = doc[target_page - 1]
+        prev_blocks = [
+            b for b in prev_page.get_text("blocks")
+            if b[4].strip() and top_y <= b[1] <= bottom_y - 2 * _PT_PER_MM
+        ]
+        if not prev_blocks:
+            continue
+        prev_bottom = max(b[3] for b in prev_blocks)
+        gap_mm = (bottom_y - prev_bottom) / _PT_PER_MM
+        if gap_mm < gap_threshold_mm:
+            continue
+
+        content_blocks = [b for b in page.get_text("blocks") if b[4].strip() and b[1] >= top_y]
+        cap_block = next((b for b in content_blocks if b[4].strip().startswith(marker)), None)
+        if cap_block is None:
+            continue
+        overhead_mm = (cap_block[3] - img_bbox[1]) / _PT_PER_MM - img_h_mm
+
+        available_for_image_mm = gap_mm - overhead_mm - safety_mm
+        floor_mm = max(img_h_mm * min_scale, min_abs_mm)
+        if available_for_image_mm < floor_mm or available_for_image_mm >= img_h_mm:
+            continue  # no alcanza a un tamaño legible, o ya cabía: no tocar
+
+        previous_style = img.get("style", "")
+        existing_style = previous_style.rstrip("; ")
+        new_style = f"max-height:{available_for_image_mm:.1f}mm"
+        img["style"] = f"{existing_style}; {new_style}" if existing_style else new_style
+        changed.append((img, previous_style))
+
+    doc.close()
+    return changed
+
+
+def revert_unplaced_hero_figures(candidates: List[Tuple[Tag, str]], pdf_path: Path) -> int:
+    """Tras volver a renderizar con los tamaños reducidos de
+    ``tighten_pushed_hero_figures``, revierte las figuras que, pese al
+    ajuste, siguieron arrancando al tope de una página nueva: en ese caso
+    reducir el tamaño no evitó el salto de página y solo restaría
+    legibilidad sin beneficio alguno.
+    """
+    doc = fitz.open(pdf_path)
+    top_y = (_PAGE_TOP_MARGIN_MM + 2) * _PT_PER_MM
+    reverted = 0
+    for img, previous_style in candidates:
+        fig = img.find_parent("figure")
+        marker = _figure_marker(fig) if fig is not None else None
+        still_pushed = True
+        if marker is not None:
+            target_page = _find_marker_page(doc, marker)
+            if target_page is not None:
+                image_info = doc[target_page].get_image_info()
+                if image_info and image_info[0]["bbox"][1] > top_y + 10 * _PT_PER_MM:
+                    still_pushed = False
+        if still_pushed:
+            if previous_style:
+                img["style"] = previous_style
+            else:
+                del img["style"]
+            reverted += 1
+    doc.close()
+    return reverted
+
+
 def extract_pdf_toc(path: Path) -> List[List]:
     doc = fitz.open(path)
     toc = doc.get_toc(simple=True)
@@ -2171,6 +2309,16 @@ def main() -> int:
                 label = unit.get("title") or unit.get("part") or unit["kind"]
                 print(f"  [{idx:02d}/{len(units):02d}] {unit['kind']}: {label[:72]}")
                 render_html_to_pdf(unit_html, unit_pdf, build_dir)
+                if unit["kind"] == "partbody":
+                    candidates = tighten_pushed_hero_figures(unit["node"], unit_pdf)
+                    if candidates:
+                        unit_html = html_shell(head_html, unit_body_html(unit), body_class=body_class)
+                        render_html_to_pdf(unit_html, unit_pdf, build_dir)
+                        reverted = revert_unplaced_hero_figures(candidates, unit_pdf)
+                        if reverted:
+                            unit_html = html_shell(head_html, unit_body_html(unit), body_class=body_class)
+                            render_html_to_pdf(unit_html, unit_pdf, build_dir)
+                        print(f"       figuras ajustadas para evitar página en blanco: {len(candidates) - reverted}")
                 pages = pdf_page_count(unit_pdf)
                 print(f"       páginas: {pages}")
                 rec = dict(unit)
