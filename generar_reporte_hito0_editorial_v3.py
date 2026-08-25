@@ -865,6 +865,13 @@ blockquote p:last-child { margin-bottom: 0; }
   text-indent: -4.5mm;
   text-align: left;
   overflow-wrap: anywhere;
+  /* Sin esto, una referencia puede partirse entre columna/página: la
+     sangría negativa (pensada solo para la primera línea real) se vuelve
+     a aplicar a la línea que abre el fragmento siguiente, lo que la
+     desplaza fuera del área de la columna y recorta sus primeros
+     caracteres. Al impedir el corte, cada referencia (un párrafo corto)
+     se mueve entera a donde quepa, igual que en .references-columns p. */
+  break-inside: avoid;
 }
 
 /* ------------------------------------------------------------------------- */
