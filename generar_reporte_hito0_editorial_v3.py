@@ -120,6 +120,17 @@ FORCE_HERO_FIGURE_SLUGS = {
 # CONTENGA uno de estos textos.
 FORCE_WIDE_TABLE_TITLES = {"estado actual del sistema"}
 
+# Figuras cuyo archivo trae, dentro de la propia imagen, un título/subtítulo
+# redundante con el pie de figura (el "Figura N. ..." al pie ya lo dice
+# todo): se recorta esa franja superior al copiar la imagen al directorio
+# de trabajo. Igual que FORCE_HERO_FIGURE_SLUGS, se identifica por el slug
+# del nombre de archivo. El valor es la fracción (0–1) del alto total que
+# se recorta desde arriba. Nunca se modifica el archivo original del
+# ZIP/carpeta de figuras, solo la copia usada para el PDF.
+CROP_FIGURE_TOP_SLUGS = {
+    "informacion-sem-rasch": 0.124,
+}
+
 MASTER_CSS = r"""
 :root {
   --teal: #00A499;
@@ -977,6 +988,16 @@ def safe_extract_zip(zip_path: Path, dest: Path) -> List[Path]:
     return extracted
 
 
+def _crop_image_top(path: Path, fraction: float) -> None:
+    """Recorta una franja del borde superior de la imagen (usada para
+    quitar títulos/subtítulos internos redundantes con el pie de figura)."""
+    with PILImage.open(path) as im:
+        width, height = im.size
+        top = int(height * fraction)
+        cropped = im.crop((0, top, width, height))
+        cropped.save(path)
+
+
 def collect_images(source: Path, dest: Path) -> Dict[str, Path]:
     """Copia/extracta imágenes y devuelve índice por basename en minúsculas."""
     dest.mkdir(parents=True, exist_ok=True)
@@ -1001,6 +1022,11 @@ def collect_images(source: Path, dest: Path) -> Dict[str, Path]:
         target = figures_dir / p.name
         shutil.copy2(p, target)
         index[key] = target
+
+        slug_match = re.match(r"figura[-_]\d+[-_](.+?)\.\w+$", key)
+        slug = slug_match.group(1) if slug_match else None
+        if slug in CROP_FIGURE_TOP_SLUGS and target.suffix.lower() != ".svg":
+            _crop_image_top(target, CROP_FIGURE_TOP_SLUGS[slug])
 
     if duplicates:
         detail = "\n".join(f"  - {k}: " + ", ".join(str(x) for x in v) for k, v in duplicates.items())
