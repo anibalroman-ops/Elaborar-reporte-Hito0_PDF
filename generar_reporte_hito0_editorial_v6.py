@@ -261,6 +261,7 @@ body {
 p {
   margin: 0 0 3.1mm;
   text-align: justify;
+  text-align-last: left;
   orphans: 2;
   widows: 2;
 }
@@ -538,7 +539,7 @@ code {
   line-height: 1.46;
   margin: 8mm 0 6mm;
 }
-.part-description p { text-align: justify; margin-bottom: 3mm; }
+.part-description p { text-align: justify; text-align-last: left; margin-bottom: 3mm; }
 .part-description blockquote {
   margin: 0 0 5mm;
   padding: 3.5mm 4.5mm;
@@ -605,6 +606,16 @@ code {
   column-fill: balance;
 }
 .flow-columns::after { content: ""; display: block; clear: both; }
+/* Tramo justo antes de una figura/tabla a todo el ancho: a una columna, no
+   a dos. Con column-count:2 (aunque sea balance), un párrafo corto se
+   parte justo antes del salto y dejaba 1-2 líneas sueltas -muy estiradas
+   por el justify- al tope de la columna derecha; con una sola columna el
+   texto simplemente continúa hasta terminar, sin "saltar" a una segunda
+   columna, y de paso ese texto ancho funciona como remate/introducción de
+   la figura o tabla que sigue. (column-fill:auto con altura automática NO
+   sirve para esto: es un bug confirmado de WeasyPrint que deja TODO el
+   contenido en la columna izquierda y una derecha en blanco.) */
+.flow-columns-preflush { column-count: 1; }
 
 h2, h3, h4 { font-family: var(--font-display); break-after: avoid; }
 h2 {
@@ -1810,11 +1821,12 @@ def normalize_part_column_flows(soup: BeautifulSoup, container: Tag) -> None:
 
     chunk: List[Tag] = []
 
-    def flush() -> None:
+    def flush(pre_break: bool = False) -> None:
         nonlocal chunk
         if not chunk:
             return
-        flow = soup.new_tag("div", attrs={"class": "flow-columns"})
+        css_class = "flow-columns flow-columns-preflush" if pre_break else "flow-columns"
+        flow = soup.new_tag("div", attrs={"class": css_class})
         for x in chunk:
             flow.append(x)
         container.append(flow)
@@ -1822,7 +1834,12 @@ def normalize_part_column_flows(soup: BeautifulSoup, container: Tag) -> None:
 
     for node in direct:
         if is_full_width(node):
-            flush()
+            # El tramo justo antes de un elemento a todo el ancho (figura/tabla)
+            # se marca con una clase aparte (.flow-columns-preflush): en vez de
+            # repartirse en dos columnas, se renderiza a una sola columna para
+            # que el texto no "salte" a una segunda columna justo antes del
+            # elemento a todo el ancho (ver la regla CSS homónima).
+            flush(pre_break=True)
             container.append(node)
         else:
             chunk.append(node)
