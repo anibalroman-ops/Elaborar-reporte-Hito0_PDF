@@ -127,10 +127,17 @@ FORCE_WIDE_TABLE_TITLES = {"estado actual del sistema"}
 # Figuras que se compactan a un alto máximo fijo (mm), a pedido explícito,
 # independientemente de si dejan o no espacio en blanco: se identifican
 # por el slug del nombre de archivo, igual que FORCE_HERO_FIGURE_SLUGS.
-COMPACT_FIGURE_MAX_HEIGHT_MM = {
-    "parametros-paso-pcm2": 65.0,
-    "funcionamiento-categorias-pcm": 68.0,
-}
+#
+# "parametros-paso-pcm2" (Figura 12) y "funcionamiento-categorias-pcm"
+# (Figura 14) tuvieron aquí un tope de 65/68 mm heredado del layout v3, muy
+# por debajo de su alto natural a ancho completo (~132 mm y ~85 mm
+# respectivamente para su relación de aspecto real), lo que las dejaba
+# ilegibles pese a ocupar el ancho completo ("hero"). El mecanismo dinámico
+# de ajuste (tighten_pushed_hero_figures/revert_unplaced_hero_figures, más
+# abajo) ya resuelve el problema de espacio en blanco que motivó ese tope
+# fijo, así que se retira para ambas y se dejan a su alto natural (sujeto al
+# techo general de figura "hero" definido en el CSS).
+COMPACT_FIGURE_MAX_HEIGHT_MM: Dict[str, float] = {}
 
 
 MASTER_CSS = r"""
