@@ -120,6 +120,14 @@ FORCE_HERO_FIGURE_SLUGS = {
 # CONTENGA uno de estos textos.
 FORCE_WIDE_TABLE_TITLES = {"estado actual del sistema"}
 
+# Figuras que se compactan a un alto máximo fijo (mm), a pedido explícito,
+# independientemente de si dejan o no espacio en blanco: se identifican
+# por el slug del nombre de archivo, igual que FORCE_HERO_FIGURE_SLUGS.
+COMPACT_FIGURE_MAX_HEIGHT_MM = {
+    "parametros-paso-pcm2": 65.0,
+    "funcionamiento-categorias-pcm": 68.0,
+}
+
 
 MASTER_CSS = r"""
 :root {
@@ -1313,6 +1321,9 @@ def transform_figures_positional(soup: BeautifulSoup, root: Tag, image_index: Di
         elif ("-cm-" in lowname or "construct map" in alt or (ratio is not None and ratio >= 2.15)):
             classes.append("hero")
         figure["class"] = classes
+
+        if fig_slug in COMPACT_FIGURE_MAX_HEIGHT_MM:
+            img["style"] = f"max-height:{COMPACT_FIGURE_MAX_HEIGHT_MM[fig_slug]:.1f}mm"
 
         frame = soup.new_tag("div", attrs={"class": "figure-frame"})
         img.extract()
