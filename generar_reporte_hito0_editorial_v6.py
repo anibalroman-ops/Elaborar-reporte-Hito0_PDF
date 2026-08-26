@@ -48,6 +48,7 @@ from __future__ import annotations
 
 import argparse
 import html as html_lib
+import math
 import os
 import re
 import shutil
@@ -313,80 +314,59 @@ code {
   position: relative;
   z-index: 3;
   height: 100%;
-  width: 122mm;
-  padding: 20mm 0 18mm 20mm;
+  width: 130mm;
+  padding: 15mm 0 15mm 15mm;
   display: flex;
   flex-direction: column;
 }
 .cover-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 4mm;
   font-family: var(--font-display);
-  font-size: 7pt;
+  font-size: 9.8pt;
   font-weight: 700;
-  letter-spacing: .09em;
+  letter-spacing: .06em;
+  line-height: 1.65;
   text-transform: uppercase;
   color: #eafcff;
-  padding-bottom: 3.5mm;
-  border-bottom: .6pt solid rgba(255,255,255,.55);
   max-width: 108mm;
 }
 .cover-title {
-  margin: 22mm 0 0;
+  margin: 68mm 0 0;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 47pt;
-  line-height: .96;
+  font-size: 61pt;
+  line-height: .95;
   letter-spacing: -.01em;
+  text-transform: uppercase;
   color: #fff;
 }
 .cover-title span { display: block; }
 .cover-subtitle {
-  margin-top: 7mm;
+  margin-top: 6mm;
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-sans);
-  font-size: 12.5pt;
+  font-size: 25pt;
   font-weight: 500;
+  line-height: 1.12;
   color: #eafcff;
-  padding-top: 5mm;
-  position: relative;
-  max-width: 95mm;
+  max-width: 110mm;
 }
-.cover-subtitle::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0;
-  width: 16mm;
-  height: .9mm;
-  background: #fff;
-}
-.cover-footer {
-  margin-top: auto;
-  padding-top: 5mm;
-  border-top: .6pt solid rgba(255,255,255,.55);
+.cover-tagline {
+  margin-top: 13mm;
   font-family: var(--font-sans);
-  max-width: 108mm;
-}
-.cover-footer .faculty {
-  font-family: var(--font-display);
   font-size: 11.5pt;
-  font-weight: 700;
-  line-height: 1.2;
+  font-weight: 500;
   color: #fff;
 }
-.cover-footer .institution {
-  font-size: 8.6pt;
-  margin-top: 1.6mm;
-  color: #dff8fb;
-}
-.cover-footer .descriptor {
-  margin-top: 4mm;
-  font-size: 7.4pt;
-  line-height: 1.4;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  color: #cdf1f5;
-  font-weight: 600;
+.cover-footer {
+  position: absolute;
+  left: 15mm;
+  bottom: 15mm;
+  z-index: 3;
+  font-family: var(--font-sans);
+  font-size: 9.3pt;
+  font-weight: 500;
+  color: #eafcff;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -513,6 +493,7 @@ code {
   font-weight: 700;
   margin: 0 0 9mm;
 }
+.part-opener .part-kicker .no-upper { text-transform: none; }
 .part-opener h1.part-heading {
   margin: 0;
   color: #fff;
@@ -536,7 +517,7 @@ code {
   font-weight: 700;
   font-size: 31pt;
   line-height: 1.04;
-  color: #fff;
+  color: var(--ink);
 }
 .part-opener.title-long .part-name { font-size: 27pt; max-width: 130mm; }
 .part-opener.title-xlong .part-name { font-size: 23.5pt; line-height: 1.08; max-width: 138mm; }
@@ -557,7 +538,7 @@ code {
   line-height: 1.46;
   margin: 8mm 0 6mm;
 }
-.part-description p { text-align: left; margin-bottom: 3mm; }
+.part-description p { text-align: justify; margin-bottom: 3mm; }
 .part-description blockquote {
   margin: 0 0 5mm;
   padding: 3.5mm 4.5mm;
@@ -1557,80 +1538,101 @@ def build_toc(soup: BeautifulSoup, headings: List[Tuple[int, str, str]]) -> Tag:
     return section
 
 
+def _mesh_edges(nodes: List[Tuple[float, float]], threshold: float, max_k: int = 3) -> List[Tuple[int, int]]:
+    """Construye los vínculos de una malla triangulada por vecino-más-cercano.
+
+    Cada nodo se conecta con sus ``max_k`` vecinos más próximos que estén a
+    una distancia menor que ``threshold``. Con nodos ya dispuestos a lo largo
+    de una trayectoria (ver ``_cover_network_svg``/``_part_network_svg``) este
+    criterio reproduce, sin necesidad de una triangulación de Delaunay
+    completa, la textura de "cinta" triangulada de la portada aprobada.
+    """
+    edges: set = set()
+    n = len(nodes)
+    for i in range(n):
+        xi, yi = nodes[i]
+        dists = sorted(
+            ((math.hypot(xi - nodes[j][0], yi - nodes[j][1]), j) for j in range(n) if j != i)
+        )
+        count = 0
+        for dist, j in dists:
+            if dist > threshold or count >= max_k:
+                break
+            edges.add((i, j) if i < j else (j, i))
+            count += 1
+    return sorted(edges)
+
+
 def _network_svg(
     width_mm: float,
     height_mm: float,
-    backbone: List[Tuple[float, float, float]],
-    satellites: List[Tuple[float, float, float, int]],
-    stroke: str,
-    stroke_opacity: float,
-    node_fill: str,
-    node_opacity: float,
-    sat_opacity: float,
+    nodes: List[Tuple[float, float]],
+    edges: List[Tuple[int, int]],
+    node_r: float = 1.3,
+    stroke: str = "#ffffff",
+    stroke_opacity: float = 0.85,
+    node_fill: str = "#ffffff",
+    node_opacity: float = 1.0,
 ) -> str:
-    """Genera el motivo de "red" (nodos + vínculos, trayectoria ascendente)
+    """Genera el motivo de "red" (malla triangulada, trayectoria ascendente)
     compartido por la portada y las portadillas de Parte, como SVG inline.
 
-    ``backbone`` es la secuencia principal de nodos (x_mm, y_mm, radio_mm),
-    conectados entre sí en orden. ``satellites`` son nodos secundarios
-    (x_mm, y_mm, radio_mm, índice_del_nodo_backbone_al_que_se_conectan) que
-    dan la sensación de "red" y no de una curva única.
+    ``nodes`` son las coordenadas (x_mm, y_mm) de cada nodo y ``edges`` los
+    pares de índices de ``nodes`` que se conectan entre sí.
     """
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width_mm} {height_mm}" '
         f'width="{width_mm}mm" height="{height_mm}mm" preserveAspectRatio="none">'
     ]
-    for (x1, y1, _r1), (x2, y2, _r2) in zip(backbone, backbone[1:]):
+    for i, j in edges:
+        x1, y1 = nodes[i]
+        x2, y2 = nodes[j]
         parts.append(
             f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{stroke}" '
-            f'stroke-opacity="{stroke_opacity}" stroke-width="0.6" stroke-linecap="round"/>'
+            f'stroke-opacity="{stroke_opacity}" stroke-width="0.5" stroke-linecap="round"/>'
         )
-    for sx, sy, _sr, parent in satellites:
-        px, py, _pr = backbone[parent]
-        parts.append(
-            f'<line x1="{px}" y1="{py}" x2="{sx}" y2="{sy}" stroke="{stroke}" '
-            f'stroke-opacity="{stroke_opacity * 0.85}" stroke-width="0.4" stroke-linecap="round"/>'
-        )
-    for x, y, r in backbone:
-        parts.append(f'<circle cx="{x}" cy="{y}" r="{r}" fill="{node_fill}" fill-opacity="{node_opacity}"/>')
-    for x, y, r, _parent in satellites:
-        parts.append(f'<circle cx="{x}" cy="{y}" r="{r}" fill="{node_fill}" fill-opacity="{sat_opacity}"/>')
+    for x, y in nodes:
+        parts.append(f'<circle cx="{x}" cy="{y}" r="{node_r}" fill="{node_fill}" fill-opacity="{node_opacity}"/>')
     parts.append("</svg>")
     return "".join(parts)
 
 
+# Coordenadas (mm, sobre una página A4 completa de 210x297mm) de los nodos de
+# la malla en red de la portada aprobada (Muestra_Editorial_Hito0_Red_Cian.pdf),
+# obtenidas por detección de círculos sobre el PDF de referencia. Se reutilizan
+# tal cual para que la portada generada reproduzca fielmente ese diseño.
+_COVER_NETWORK_NODES: List[Tuple[float, float]] = [
+    (190.8, 17.1), (182.6, 29.8), (191.5, 37.0), (176.9, 50.4), (193.9, 53.0),
+    (182.8, 66.7), (168.4, 69.4), (191.0, 78.8), (179.4, 83.5), (162.1, 86.9),
+    (171.5, 98.0), (183.3, 98.2), (155.2, 102.5), (166.2, 115.2), (147.4, 121.3),
+    (151.0, 131.8), (132.7, 134.0), (118.6, 143.5), (136.1, 146.8), (102.0, 155.1),
+    (121.3, 156.6), (107.4, 168.9), (99.0, 185.1), (80.3, 187.6), (86.7, 203.4),
+    (99.1, 208.5), (71.3, 209.2), (87.1, 223.3), (67.5, 228.6), (104.2, 230.1),
+    (81.9, 242.4), (63.9, 249.1), (95.1, 249.7), (113.1, 251.8), (76.7, 262.5),
+    (95.5, 267.2), (61.3, 269.9), (77.8, 274.7),
+]
+
+# Ídem para la malla (recortada) de las portadillas de Parte, referida al
+# contenedor local ``.part-network`` (130x181mm, alineado al borde derecho de
+# la página) — coordenadas de página trasladadas en x = página_x - 80mm.
+_PART_NETWORK_NODES: List[Tuple[float, float]] = [
+    (125.5, 20.3), (122.1, 32.5), (129.8, 34.8), (114.3, 40.3), (123.2, 44.7),
+    (109.9, 51.5), (117.6, 54.8), (102.1, 59.2), (109.9, 62.5), (97.7, 69.2),
+    (104.3, 72.6), (88.8, 74.8), (97.6, 80.3), (82.1, 84.8), (89.8, 89.2),
+    (73.2, 92.6), (81.0, 98.1), (63.3, 102.5), (82.0, 111.5), (66.5, 115.9),
+    (73.2, 122.5), (57.8, 127.0), (74.2, 136.0), (60.9, 140.5), (67.6, 146.0),
+    (53.2, 149.3), (69.8, 158.2), (55.4, 161.6), (65.4, 169.3), (49.8, 172.7),
+]
+
+
 def _cover_network_svg() -> str:
-    backbone = [
-        (36, 258, 3.0), (52, 232, 3.4), (72, 205, 3.8), (95, 178, 4.3),
-        (118, 148, 4.8), (143, 112, 5.6), (168, 75, 6.4), (188, 42, 7.2),
-    ]
-    satellites = [
-        (30, 214, 2.0, 1),
-        (108, 204, 2.4, 3),
-        (125, 90, 2.2, 5),
-        (196, 90, 2.6, 6),
-    ]
-    return _network_svg(
-        210, 297, backbone, satellites,
-        stroke="#ffffff", stroke_opacity=0.5,
-        node_fill="#ffffff", node_opacity=0.92, sat_opacity=0.55,
-    )
+    edges = _mesh_edges(_COVER_NETWORK_NODES, threshold=24.0, max_k=3)
+    return _network_svg(210, 297, _COVER_NETWORK_NODES, edges, node_r=1.35, stroke_opacity=0.85)
 
 
 def _part_network_svg() -> str:
-    backbone = [
-        (8, 175, 3.0), (26, 150, 3.6), (48, 122, 4.2),
-        (74, 95, 4.8), (100, 62, 5.6), (123, 26, 6.4),
-    ]
-    satellites = [
-        (44, 160, 2.0, 1),
-        (94, 100, 2.3, 3),
-    ]
-    return _network_svg(
-        130, 181, backbone, satellites,
-        stroke="#ffffff", stroke_opacity=0.55,
-        node_fill="#ffffff", node_opacity=0.95, sat_opacity=0.6,
-    )
+    edges = _mesh_edges(_PART_NETWORK_NODES, threshold=22.0, max_k=3)
+    return _network_svg(130, 181, _PART_NETWORK_NODES, edges, node_r=1.3, stroke_opacity=0.85)
 
 
 def build_cover(soup: BeautifulSoup, title: str, institution: str) -> Tag:
@@ -1642,40 +1644,43 @@ def build_cover(soup: BeautifulSoup, title: str, institution: str) -> Tag:
     network.append(BeautifulSoup(_cover_network_svg(), "html.parser"))
     axis = soup.new_tag("div", attrs={"class": "cover-axis"})
 
+    # Identificación institucional pequeña, dos líneas (Facultad / Universidad),
+    # en el borde superior izquierdo — sin columna derecha, tal como la portada
+    # aprobada (Muestra_Editorial_Hito0_Red_Cian.pdf).
+    if "," in institution:
+        f, rest = institution.split(",", 1)
+    else:
+        f, rest = institution, ""
     header = soup.new_tag("div", attrs={"class": "cover-header"})
-    left = soup.new_tag("span"); left.string = "INFORME DE MEDICIÓN PSICOMÉTRICA"
-    right = soup.new_tag("span"); right.string = "ESTUDIO 2026"
-    header.extend([left, right])
+    hline1 = soup.new_tag("div"); hline1.string = f.strip().upper()
+    header.append(hline1)
+    if rest.strip():
+        hline2 = soup.new_tag("div"); hline2.string = rest.strip().upper()
+        header.append(hline2)
 
     h = soup.new_tag("h1", attrs={"class": "cover-title"})
-    line1 = soup.new_tag("span"); line1.string = "Diagnostico"
+    line1 = soup.new_tag("span"); line1.string = "Diagnóstico"
     line2 = soup.new_tag("span"); line2.string = "Hito 0"
     # Espacio explícito (ver nota equivalente en build_part_opener): evita que
     # WeasyPrint concatene sin separación el título del marcador/outline del PDF.
     h.extend([line1, NavigableString(" "), line2])
 
     subtitle = soup.new_tag("div", attrs={"class": "cover-subtitle"})
-    subtitle.string = "Medición Atributos i+e"
+    sub1 = soup.new_tag("span"); sub1.string = "Medición Atributos i+e"
+    sub2 = soup.new_tag("span"); sub2.string = "Perfil de Ingreso"
+    subtitle.extend([sub1, sub2])
 
-    # Cierre editorial pequeño (sección 2.1 del diseño maestro): Facultad,
-    # Universidad y descriptor del reporte, apilados como bloques propios
-    # (no spans inline, para no depender de un display:block adicional).
+    # Cierre editorial (sección 2.1 del diseño maestro): la Facultad en flujo
+    # normal bajo el subtítulo, y un descriptor de cierre pequeño anclado al
+    # borde inferior izquierdo — replica la composición de la portada aprobada.
+    tagline = soup.new_tag("div", attrs={"class": "cover-tagline"})
+    tagline.string = f.strip()
+
     footer = soup.new_tag("div", attrs={"class": "cover-footer"})
-    if "," in institution:
-        f, rest = institution.split(",", 1)
-    else:
-        f, rest = institution, ""
-    faculty = soup.new_tag("div", attrs={"class": "faculty"}); faculty.string = f.strip()
-    footer.append(faculty)
-    if rest.strip():
-        inst = soup.new_tag("div", attrs={"class": "institution"}); inst.string = rest.strip()
-        footer.append(inst)
-    desc = soup.new_tag("div", attrs={"class": "descriptor"})
-    desc.string = "Perfil de ingreso · atributos de innovación y emprendimiento"
-    footer.append(desc)
+    footer.string = "Reporte académico · 2026"
 
-    inner.extend([header, h, subtitle, footer])
-    section.extend([network, axis, inner])
+    inner.extend([header, h, subtitle, tagline])
+    section.extend([network, axis, inner, footer])
     return section
 
 
@@ -1702,7 +1707,9 @@ def build_part_opener(soup: BeautifulSoup, h1: Tag, nodes: List[Tag]) -> Tuple[T
     opener = soup.new_tag("section", attrs={"class": f"part-opener part-style-{style_id} {length_class}"})
     content = soup.new_tag("div", attrs={"class": "part-content"})
     kicker = soup.new_tag("div", attrs={"class": "part-kicker"})
-    kicker.string = "DIAGNOSTICO HITO 0 · MEDICIÓN ATRIBUTOS i+e"
+    kicker.string = "DIAGNÓSTICO HITO 0 · MEDICIÓN ATRIBUTOS "
+    kicker_ie = soup.new_tag("span", attrs={"class": "no-upper"}); kicker_ie.string = "i+e"
+    kicker.append(kicker_ie)
     heading = soup.new_tag("h1", attrs={"class": "part-heading", "id": h1.get("id", slugify(text))})
     ns = soup.new_tag("span", attrs={"class": "part-number"}); ns.string = number
     nm = soup.new_tag("span", attrs={"class": "part-name"}); nm.string = name
@@ -2184,9 +2191,30 @@ _PT_PER_MM = 72.0 / 25.4
 
 
 def _find_marker_page(doc: "fitz.Document", marker: str) -> Optional[int]:
-    for pno in range(1, doc.page_count):
-        if doc[pno].search_for(marker):
-            return pno
+    """Busca la página donde aparece el marcador (el inicio del caption) de
+    una figura.
+
+    Se intenta primero con el marcador completo (hasta ~60 caracteres del
+    caption) y solo se cae a fragmentos más cortos —terminando en el
+    mínimo "Figura N."— si ninguna página contiene el fragmento largo. Un
+    marcador tan corto como "Figura 6." puede coincidir con una referencia
+    cruzada dentro del caption de OTRA figura anterior (p. ej. "...
+    documentada en la Figura 6." al cierre del caption de la Figura 5), lo
+    que hace que se detecte la página equivocada y la función deje la
+    figura intacta sin motivo. Un fragmento largo del caption real es, en
+    la práctica, único en el documento.
+    """
+    short_match = re.match(r"^Figura\s+\d+\.", marker)
+    short = short_match.group(0) if short_match else marker
+    candidates = [marker]
+    if len(marker) > 30:
+        candidates.append(marker[:30])
+    if short != marker and short not in candidates:
+        candidates.append(short)
+    for cand in candidates:
+        for pno in range(1, doc.page_count):
+            if doc[pno].search_for(cand):
+                return pno
     return None
 
 
@@ -2194,8 +2222,10 @@ def _figure_marker(fig: Tag) -> Optional[str]:
     caption = fig.find("figcaption")
     if caption is None:
         return None
-    m = re.match(r"^(Figura\s+\d+\.)", caption.get_text(" ", strip=True))
-    return m.group(1) if m else None
+    text = caption.get_text(" ", strip=True)
+    if not re.match(r"^Figura\s+\d+\.", text):
+        return None
+    return text[:60].strip()
 
 
 def tighten_pushed_hero_figures(
