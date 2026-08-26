@@ -38,52 +38,44 @@ Cuando un concepto técnico es indispensable, se explica en una línea al usarse
 
 ## Índice
 
-**Resumen ejecutivo**
-
-**Parte 1. Qué es el Hito 0 y por qué existe**
-1.1 El problema institucional que originó el proyecto
-1.2 Qué es el Hito 0
-1.3 Qué significa "medir" un atributo del perfil de egreso
-1.4 Qué no es el Hito 0
-
-**Parte 2. Qué hicimos primero y qué aprendimos**
-2.1 La primera aproximación institucional
-2.2 Cómo se evaluó esa primera aproximación
-2.3 Los seis hallazgos que motivaron el rediseño
-2.4 La conclusión que cambió el rumbo del proyecto
-
-**Parte 3. Cómo rediseñamos los diez atributos**
-3.1 De etiquetas a variables: los Construct Maps
-3.2 La validación con un panel de especialistas
-3.3 Qué mostró la validación experta
-3.4 Cuatro tipos de ajuste
-
-**Parte 4. Los diez atributos institucionales, rediseñados**
-4.1 Panorama general
-4.2 Los diez atributos, uno por uno
-4.3 Fronteras entre atributos: evitar contar lo mismo dos veces
-
-**Parte 5. La agenda hacia una medición aplicable**
-5.1 Qué falta para tener un instrumento, no solo una definición
-5.2 Diseño de tareas
-5.3 Cómo se puntuará cada tarea
-5.4 El pilotaje
-5.5 El modelo estadístico
-5.6 Hoja de ruta y tiempos
-5.7 Criterios para autorizar una aplicación institucional ampliada
-
-**Parte 6. Aprendizajes, riesgos y recomendaciones**
-6.1 Los aprendizajes centrales del proceso
-6.2 Qué no se debe volver a hacer
-6.3 Ocho recomendaciones institucionales
-6.4 Implicaciones para la gestión de la Facultad
-
-**Parte 7. Conclusión y estado del proyecto**
-7.1 Qué se logró en esta etapa
-7.2 Qué falta y qué se necesita para lograrlo
-7.3 Estado del proyecto, componente por componente
-
-**Glosario breve de términos técnicos**
+- **Resumen ejecutivo**
+- **Parte 1. Qué es el Hito 0 y por qué existe**
+    - 1.1 El problema institucional que originó el proyecto
+    - 1.2 Qué es el Hito 0
+    - 1.3 Qué significa "medir" un atributo del perfil de egreso
+    - 1.4 Qué no es el Hito 0
+- **Parte 2. Qué hicimos primero y qué aprendimos**
+    - 2.1 La primera aproximación institucional
+    - 2.2 Cómo se evaluó esa primera aproximación
+    - 2.3 Los seis hallazgos que motivaron el rediseño
+    - 2.4 La conclusión que cambió el rumbo del proyecto
+- **Parte 3. Cómo rediseñamos los diez atributos**
+    - 3.1 De etiquetas a variables: los Construct Maps
+    - 3.2 La validación con un panel de especialistas
+    - 3.3 Qué mostró la validación experta
+    - 3.4 Cuatro tipos de ajuste
+- **Parte 4. Los diez atributos institucionales, rediseñados**
+    - 4.1 Panorama general
+    - 4.2 Los diez atributos, uno por uno
+    - 4.3 Fronteras entre atributos: evitar contar lo mismo dos veces
+- **Parte 5. La agenda hacia una medición aplicable**
+    - 5.1 Qué falta para tener un instrumento, no solo una definición
+    - 5.2 Diseño de tareas
+    - 5.3 Cómo se puntuará cada tarea
+    - 5.4 El pilotaje
+    - 5.5 El modelo estadístico
+    - 5.6 Hoja de ruta y tiempos
+    - 5.7 Criterios para autorizar una aplicación institucional ampliada
+- **Parte 6. Aprendizajes, riesgos y recomendaciones**
+    - 6.1 Los aprendizajes centrales del proceso
+    - 6.2 Qué no se debe volver a hacer
+    - 6.3 Ocho recomendaciones institucionales
+    - 6.4 Implicaciones para la gestión de la Facultad
+- **Parte 7. Conclusión y estado del proyecto**
+    - 7.1 Qué se logró en esta etapa
+    - 7.2 Qué falta y qué se necesita para lograrlo
+    - 7.3 Estado del proyecto, componente por componente
+- **Glosario breve de términos técnicos**
 
 ---
 
