@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Reporte Institucional del Hito 0 — Versión ejecutiva (borrador)</title>
+<style>
+@page {
+    size: A4;
+    margin: 20mm 22mm 22mm 22mm;
+    @top-center {
+        content: "Reporte Institucional del Hito 0 — Versión ejecutiva (borrador de contenido)";
+        font-family: "Liberation Sans", sans-serif;
+        font-size: 8pt;
+        color: #8a94a3;
+    }
+    @bottom-center {
+        content: counter(page);
+        font-family: "Liberation Sans", sans-serif;
+        font-size: 9pt;
+        color: #6b7280;
+    }
+}
+@page :first {
+    @top-center { content: none; }
+    @bottom-center { content: none; }
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: "Liberation Serif", "Times New Roman", serif;
+    font-size: 11pt;
+    line-height: 1.5;
+    color: #1a1a1a;
+}
+
+/* ---------- Portada ---------- */
+div.cover {
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 255mm;
+}
+div.cover h1 {
+    font-family: "Liberation Sans", sans-serif;
+    font-size: 27pt;
+    font-weight: bold;
+    color: #16233d;
+    margin: 0 0 4mm 0;
+    line-height: 1.25;
+    max-width: 140mm;
+}
+div.cover h2 {
+    font-family: "Liberation Sans", sans-serif;
+    font-size: 15pt;
+    font-weight: normal;
+    color: #3c5c86;
+    margin: 0 0 18mm 0;
+    border: none;
+    padding: 0;
+}
+div.cover p {
+    font-family: "Liberation Sans", sans-serif;
+    font-size: 12pt;
+    color: #2a2a2a;
+    margin: 1.5mm 0;
+}
+div.cover p strong {
+    display: inline-block;
+    padding: 2mm 5mm;
+    border: 0.6pt solid #16233d;
+    border-radius: 1mm;
+    color: #16233d;
+    margin-top: 10mm;
+}
+div.cover hr {
+    display: none;
+}
+
+/* ---------- Encabezados ---------- */
+h1 {
+    font-family: "Liberation Sans", sans-serif;
+    font-size: 19pt;
+    color: #16233d;
+    margin: 0 0 8mm 0;
+    padding-bottom: 3mm;
+    border-bottom: 1.2pt solid #16233d;
+    page-break-after: avoid;
+}
+body > h1 {
+    page-break-before: always;
+}
+h2 {
+    font-family: "Liberation Sans", sans-serif;
+    font-size: 14pt;
+    color: #1f3a5f;
+    margin: 9mm 0 3mm 0;
+    page-break-after: avoid;
+}
+h3 {
+    font-family: "Liberation Sans", sans-serif;
+    font-size: 12pt;
+    color: #2a4a72;
+    margin: 6mm 0 2mm 0;
+    page-break-after: avoid;
+}
+h3:first-child, h2:first-child { margin-top: 0; }
+
+/* ---------- Texto ---------- */
+p { margin: 0 0 3mm 0; text-align: justify; orphans: 3; widows: 3; }
+strong { color: #111827; }
+em { color: #33415c; }
+
+ul, ol { margin: 0 0 3mm 0; padding-left: 6mm; }
+li { margin: 0 0 1.2mm 0; }
+li > ul, li > ol { margin-top: 1.2mm; }
+
+/* Índice: sin viñetas, look de tabla de contenidos */
+h2#índice + ul,
+h2#indice + ul {
+    list-style: none;
+    padding-left: 0;
+}
+h2#índice ul, h2#indice ul,
+h2#índice + ul ul, h2#indice + ul ul {
+    list-style: none;
+    padding-left: 6mm;
+}
+h2#índice li, h2#indice li,
+h2#índice + ul li, h2#indice + ul li {
+    margin-bottom: 0.8mm;
+}
+h2#índice + ul > li, h2#indice + ul > li {
+    margin-top: 3mm;
+    font-family: "Liberation Sans", sans-serif;
+}
+h2#índice + ul > li > ul li, h2#indice + ul > li > ul li {
+    font-size: 9.6pt;
+    color: #333;
+}
+
+blockquote {
+    margin: 4mm 0 4mm 0;
+    padding: 3mm 6mm;
+    border-left: 2.2pt solid #1f3a5f;
+    background: #f4f6f9;
+    font-style: italic;
+    color: #16233d;
+    page-break-inside: avoid;
+}
+blockquote p { margin: 0; text-align: left; }
+
+hr {
+    border: none;
+    border-top: 0.5pt solid #c9d1dc;
+    margin: 6mm 0;
+}
+
+/* ---------- Tablas ---------- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 3mm 0 5mm 0;
+    font-size: 8.6pt;
+    line-height: 1.32;
+}
+th, td {
+    border: 0.5pt solid #c9d1dc;
+    padding: 1.6mm 2.2mm;
+    text-align: left;
+    vertical-align: top;
+}
+th {
+    background: #e8edf4;
+    font-family: "Liberation Sans", sans-serif;
+    font-weight: bold;
+    color: #16233d;
+}
+tr { page-break-inside: avoid; }
+em, table em { color: inherit; }
+table + p em, p > em:only-child { display: block; font-size: 9pt; color: #555; }
+
+/* Glosario y notas finales */
+h1:last-of-type + p em:only-child,
+body > p:last-child em:only-child {
+    display: block;
+    text-align: center;
+    color: #555;
+    margin-top: 8mm;
+}
+</style>
+</head>
+<body>
+<div class="cover"><h1>REPORTE INSTITUCIONAL DEL HITO 0</h1>
+<h2>Diagnóstico, rediseño y hoja de ruta</h2>
+<p><strong>Versión ejecutiva para autoridades institucionales</strong></p>
+<p>Facultad de Ingeniería — Universidad de Santiago de Chile</p>
+<hr/></div>
+<h2>Nota sobre este documento</h2>
+<p>Este reporte resume, para la toma de decisiones institucionales, el trabajo realizado durante la primera etapa de reconstrucción del Hito 0: el diagnóstico de evaluación de los diez atributos de innovación y emprendimiento del perfil de egreso, aplicado al ingreso de los y las estudiantes de la Facultad.</p>
+<p>El proyecto cuenta con un reporte científico completo, de carácter técnico, que documenta cada análisis, cada decisión metodológica y su fundamento en la literatura especializada. Este documento no reemplaza ese reporte: lo traduce. Presenta las mismas conclusiones y la misma hoja de ruta, pero organizadas para una lectura directa por parte de quienes deben decidir sobre la continuidad, los recursos y los tiempos del proyecto — no para quienes deben ejecutar o auditar su metodología.</p>
+<p>Cuando un concepto técnico es indispensable, se explica en una línea al usarse por primera vez y se reúne, junto con los demás, en un glosario breve al final de este documento.</p>
+<hr/>
+<h2>Índice</h2>
+<ul>
+<li><strong>Resumen ejecutivo</strong></li>
+<li><strong>Parte 1. Qué es el Hito 0 y por qué existe</strong>
+<ul>
+<li>1.1 El problema institucional que originó el proyecto</li>
+<li>1.2 Qué es el Hito 0</li>
+<li>1.3 Qué significa "medir" un atributo del perfil de egreso</li>
+<li>1.4 Qué no es el Hito 0</li>
+</ul>
+</li>
+<li><strong>Parte 2. Qué hicimos primero y qué aprendimos</strong>
+<ul>
+<li>2.1 La primera aproximación institucional</li>
+<li>2.2 Cómo se evaluó esa primera aproximación</li>
+<li>2.3 Los seis hallazgos que motivaron el rediseño</li>
+<li>2.4 La conclusión que cambió el rumbo del proyecto</li>
+</ul>
+</li>
+<li><strong>Parte 3. Cómo rediseñamos los diez atributos</strong>
+<ul>
+<li>3.1 De etiquetas a variables: los Construct Maps</li>
+<li>3.2 La validación con un panel de especialistas</li>
+<li>3.3 Qué mostró la validación experta</li>
+<li>3.4 Cuatro tipos de ajuste</li>
+</ul>
+</li>
+<li><strong>Parte 4. Los diez atributos institucionales, rediseñados</strong>
+<ul>
+<li>4.1 Panorama general</li>
+<li>4.2 Los diez atributos, uno por uno</li>
+<li>4.3 Fronteras entre atributos: evitar contar lo mismo dos veces</li>
+</ul>
+</li>
+<li><strong>Parte 5. La agenda hacia una medición aplicable</strong>
+<ul>
+<li>5.1 Qué falta para tener un instrumento, no solo una definición</li>
+<li>5.2 Diseño de tareas</li>
+<li>5.3 Cómo se puntuará cada tarea</li>
+<li>5.4 El pilotaje</li>
+<li>5.5 El modelo estadístico</li>
+<li>5.6 Hoja de ruta y tiempos</li>
+<li>5.7 Criterios para autorizar una aplicación institucional ampliada</li>
+</ul>
+</li>
+<li><strong>Parte 6. Aprendizajes, riesgos y recomendaciones</strong>
+<ul>
+<li>6.1 Los aprendizajes centrales del proceso</li>
+<li>6.2 Qué no se debe volver a hacer</li>
+<li>6.3 Ocho recomendaciones institucionales</li>
+<li>6.4 Implicaciones para la gestión de la Facultad</li>
+</ul>
+</li>
+<li><strong>Parte 7. Conclusión y estado del proyecto</strong>
+<ul>
+<li>7.1 Qué se logró en esta etapa</li>
+<li>7.2 Qué falta y qué se necesita para lograrlo</li>
+<li>7.3 Estado del proyecto, componente por componente</li>
+</ul>
+</li>
+<li><strong>Glosario breve de términos técnicos</strong></li>
+</ul>
+<hr/>
+<h1>RESUMEN EJECUTIVO</h1>
+<p>La Facultad de Ingeniería declara, como parte del perfil de egreso de sus estudiantes, diez atributos asociados a innovación y emprendimiento: Comunicación, Trabajo grupal e individual, Interacción con usuarios reales, Diseño, Teoría de innovación y emprendimiento, Seguridad y riesgos, Liderazgo, Economía y gestión, Ética y profesionalismo, y Trabajo inter y multidisciplinario. El Hito 0 es el diagnóstico que busca observar, al momento del ingreso a la universidad, en qué situación llegan los y las estudiantes respecto de estos diez atributos — no para clasificarlos ni seleccionarlos, sino para que la Facultad pueda planificar su formación con información real.</p>
+<p><strong>La primera versión del Hito 0 se aplicó, y esa aplicación generó una lección institucional valiosa.</strong> Un instrumento individual en línea y una actividad grupal presencial se aplicaron a una cohorte completa de ingreso. El análisis retrospectivo de esos resultados —documentado en detalle en el reporte científico— mostró que la arquitectura original tenía limitaciones importantes: varios atributos dependían de una sola pregunta o de un solo criterio de evaluación; algunas partes del instrumento resultaron demasiado fáciles para diferenciar a los estudiantes; la cobertura de los diez atributos era desigual entre el instrumento individual y la actividad grupal; y el diseño no permitía distinguir con solidez si un resultado grupal reflejaba a cada estudiante en particular o solo al grupo en su conjunto.</p>
+<p><strong>Ese diagnóstico llevó a una decisión metodológica de fondo: no ajustar preguntas, sino redefinir qué significa cada uno de los diez atributos.</strong> Antes de este proyecto, "Liderazgo" o "Diseño" existían como nombres del perfil de egreso, sin una definición operativa de qué varía entre un estudiante y otro respecto de ellos, ni de cómo se diferencian formas de desempeño más y menos desarrolladas. El equipo del proyecto construyó, para cada uno de los diez atributos, una definición explícita del tipo de progresión esperable entre el ingreso a la universidad y un desarrollo más avanzado — lo que en este documento llamamos, de forma abreviada, un <strong>mapa de progresión</strong> (el término técnico es <em>Construct Map</em>).</p>
+<p><strong>Esos diez mapas fueron sometidos a la revisión de un panel de cinco especialistas externos</strong>, cuya evaluación cuantitativa y cualitativa permitió identificar qué definiciones podían mantenerse con ajustes menores y cuáles requerían una revisión más profunda. Como resultado de ese proceso: <strong>seis</strong> de los diez atributos mantienen una progresión única, refinada o ajustada; <strong>cuatro</strong> —Comunicación, Diseño, Teoría de innovación y emprendimiento, y Economía y gestión— resultaron suficientemente complejos como para requerir más de una dimensión de progresión dentro del mismo atributo. Ninguno de los diez mapas se declara "validado": todos son, a la fecha de este reporte, hipótesis sustantivas mejor fundamentadas que su versión inicial, pendientes todavía de contraste con datos reales de estudiantes.</p>
+<p><strong>El estado actual del proyecto es el siguiente: existe ahora una definición explícita y respaldada por evidencia de qué debe medir cada uno de los diez atributos. No existe todavía el instrumento que los mida.</strong> Faltan, en orden: el diseño de las tareas o situaciones que permitan observar cada definición; las reglas de puntuación asociadas a cada una; un pilotaje con estudiantes reales; y el modelo estadístico que permita interpretar esos datos con solidez. Este reporte presenta la hoja de ruta completa para esas etapas, con sus tiempos estimados y los criterios mínimos que deberían cumplirse antes de aplicar una versión ampliada del Hito 0 a cohortes completas de ingreso.</p>
+<p><strong>El resultado principal de esta etapa del proyecto no es, por tanto, un nuevo test terminado.</strong> Es una arquitectura de medición mucho más sólida y defendible que la que existía al inicio, sobre la cual construir, en las etapas siguientes, un instrumento que sí pueda aplicarse con confianza institucional. Este reporte cierra con ocho recomendaciones concretas para la Facultad y con los criterios que deberían orientar la decisión de continuar, y cómo continuar, con las siguientes etapas del proyecto.</p>
+<hr/>
+<h1>PARTE 1. QUÉ ES EL HITO 0 Y POR QUÉ EXISTE</h1>
+<h2>1.1 El problema institucional que originó el proyecto</h2>
+<p>La Facultad de Ingeniería incorpora, como parte de su sello formativo, diez atributos de innovación y emprendimiento dentro del perfil de egreso de todas sus carreras. Declarar estos atributos como un compromiso formativo institucional plantea, de manera casi inmediata, una pregunta operativa que no siempre es sencilla de responder: <strong>¿en qué situación llegan realmente los y las estudiantes respecto de estos diez atributos cuando ingresan a la Facultad?</strong></p>
+<p>Sin una respuesta fundamentada a esa pregunta, la planificación curricular orientada a fortalecer estos atributos durante la formación universitaria carece de una línea base real sobre la cual apoyarse. La Facultad podría estar invirtiendo esfuerzo formativo en aspectos que buena parte de la cohorte ya trae desarrollados al ingresar, o podría no estar dando suficiente énfasis a aspectos en los que la mayoría de los estudiantes ingresa con un desarrollo más incipiente.</p>
+<p>El Hito 0 nace como respuesta institucional a esta pregunta: un diagnóstico aplicado al ingreso, cuyo propósito es exclusivamente formativo y diagnóstico.</p>
+<h2>1.2 Qué es el Hito 0</h2>
+<p>El Hito 0 es el primer momento de un sistema de seguimiento del perfil de egreso que la Facultad se propone construir a lo largo de la trayectoria formativa de sus estudiantes. Su función es establecer una <strong>línea base</strong>: una fotografía, tomada al ingreso, de cómo se manifiestan inicialmente los diez atributos de innovación y emprendimiento en una cohorte determinada.</p>
+<p>Esta línea base cumple tres funciones institucionales:</p>
+<ul>
+<li>Permite a la coordinación docente y a las unidades curriculares planificar con información real, y no solo con supuestos, sobre el punto de partida de sus estudiantes.</li>
+<li>Permite comparar cohortes distintas a lo largo del tiempo, observando si cambios en el proceso de admisión, en la educación media, o en el contexto social inciden en el perfil de ingreso.</li>
+<li>Constituye el punto de referencia contra el cual, en etapas futuras del sistema de seguimiento, podrán compararse mediciones posteriores del mismo perfil de egreso durante la formación.</li>
+</ul>
+<h2>1.3 Qué significa "medir" un atributo del perfil de egreso</h2>
+<p>Medir un atributo como Liderazgo o Diseño no es equivalente a aplicar un examen de conocimientos. No existe, para estos diez atributos, un conjunto fijo de respuestas correctas que un estudiante deba memorizar. Lo que se busca observar es <strong>una progresión</strong>: formas de razonar, decidir o actuar que van desde manifestaciones más incipientes hasta manifestaciones más desarrolladas — sin que ninguna de esas posiciones se interprete como "error" o "fracaso", incluida la más inicial.</p>
+<p>Esta forma de entender la medición proviene de un enfoque metodológico consolidado en evaluación educativa, conocido como <strong>modelamiento de constructos</strong> (<em>construct modelling</em>), desarrollado sistemáticamente por Mark Wilson (2023) y aplicado en distintos sistemas de evaluación diagnóstica en el mundo. Su lógica se organiza en cuatro pasos, que se repiten para cada uno de los diez atributos:</p>
+<ol>
+<li><strong>Definir con precisión qué se pretende medir</strong> y cómo se espera que varíe entre distintos estudiantes (un <em>mapa de progresión</em>).</li>
+<li><strong>Diseñar situaciones o tareas</strong> capaces de generar evidencia observable sobre esa variable.</li>
+<li><strong>Definir reglas de interpretación</strong> de esa evidencia: qué respuesta corresponde a qué posición de la progresión.</li>
+<li><strong>Contrastar estas definiciones con datos reales</strong> de estudiantes, mediante un modelo estadístico que permite verificar si la progresión hipotetizada efectivamente se comporta como se esperaba.</li>
+</ol>
+<p>Este reporte documenta que el proyecto Hito 0 completó, durante esta etapa, el primer paso para los diez atributos y desarrolló la hoja de ruta detallada para los tres pasos siguientes.</p>
+<h2>1.4 Qué no es el Hito 0</h2>
+<p>Para evitar usos institucionales no previstos, conviene precisar explícitamente qué <strong>no</strong> es el Hito 0:</p>
+<ul>
+<li>No es un instrumento de selección de ingreso: se aplica <strong>después</strong> de que el estudiante ya ingresó a la Facultad.</li>
+<li>No es un mecanismo de ranking entre estudiantes, secciones o cohortes.</li>
+<li>No mide conocimientos disciplinares de ingeniería.</li>
+<li>No entrega, ni pretende entregar, una calificación académica.</li>
+<li>No es, en su estado actual, un instrumento terminado y listo para aplicación masiva sostenida: es, como se detalla en este reporte, una arquitectura de medición validada conceptualmente pero todavía sin datos empíricos propios.</li>
+</ul>
+<hr/>
+<h1>PARTE 2. QUÉ HICIMOS PRIMERO Y QUÉ APRENDIMOS</h1>
+<h2>2.1 La primera aproximación institucional</h2>
+<p>La primera versión del Hito 0 se aplicó mediante dos instrumentos complementarios a una cohorte completa de estudiantes de ingreso:</p>
+<ul>
+<li>Una <strong>prueba individual en línea</strong>, de aplicación asincrónica a través del campus virtual, compuesta por diez preguntas de selección única, cada una asociada a uno o más de los diez atributos institucionales.</li>
+<li>Una <strong>situación de desempeño grupal</strong>, aplicada de manera presencial en una sesión de laboratorio, en la que equipos de estudiantes enfrentaron una tarea colaborativa evaluada mediante ocho criterios de apreciación, cada uno asociado a uno o más atributos.</li>
+</ul>
+<p>Esta primera aproximación permitió a la Facultad obtener, por primera vez, una experiencia real de aplicación del Hito 0 a escala de cohorte completa — un logro institucional en sí mismo, que sentó las bases operativas (plataforma, coordinación docente, tiempos de aplicación) sobre las cuales continúa el proyecto.</p>
+<h2>2.2 Cómo se evaluó esa primera aproximación</h2>
+<p>El equipo del proyecto realizó un análisis retrospectivo riguroso de los resultados de ambos instrumentos, usando herramientas estadísticas estándar en evaluación educativa para examinar, entre otros aspectos: qué tan bien cada pregunta o criterio diferenciaba a los estudiantes; si las dificultades de las preguntas estaban bien distribuidas o concentradas en un solo nivel; qué tan consistentes eran los resultados; y qué tan comparables resultaban las evaluaciones entre distintos evaluadores, en el caso de la actividad grupal.</p>
+<p>Este análisis no tuvo como propósito juzgar el trabajo del equipo que diseñó la primera aproximación, sino generar la evidencia necesaria para decidir, con fundamento, cómo debía continuar el proyecto.</p>
+<h2>2.3 Los seis hallazgos que motivaron el rediseño</h2>
+<p><strong>1. Varios atributos dependían de una sola pregunta o de un solo criterio.</strong> Cuando la única fuente de evidencia sobre un atributo es una pregunta o un criterio, no es posible estimar con confianza la posición de un estudiante respecto de ese atributo: cualquier ambigüedad en esa única pregunta afecta directamente, y sin forma de compensarla, la medición completa del atributo.</p>
+<p><strong>2. Partes del instrumento resultaron demasiado fáciles.</strong> El análisis mostró que buena parte de las preguntas de la prueba individual tenían una dificultad baja para la población de ingreso, y que un porcentaje relevante de estudiantes obtuvo el puntaje máximo posible. Esto limita la capacidad del instrumento para diferenciar entre estudiantes con distintos niveles de desarrollo — un problema equivalente a usar una pesa que solo alcanza a distinguir a las personas más livianas del grupo, y confunde a todas las demás en un mismo valor.</p>
+<p><strong>3. La cobertura de los diez atributos era desigual entre ambos instrumentos.</strong> Algunos atributos estaban representados en ambos instrumentos; otros, solo en uno; y las combinaciones no seguían un criterio explícito de diseño, sino que respondían más bien a la forma en que se habían redactado originalmente las preguntas y criterios.</p>
+<p><strong>4. Algunos criterios medían, en la práctica, algo distinto de lo que su nombre indicaba.</strong> El caso más claro documentado en el reporte científico es un criterio de la actividad grupal cuya etiqueta declaraba "Trabajo grupal e individual", pero cuya redacción efectiva pedía a los evaluadores observar algo más cercano a "Trabajo inter y multidisciplinario". Este tipo de desajuste entre lo que un criterio dice medir y lo que efectivamente mide es difícil de detectar sin un análisis dedicado, y puede pasar inadvertido durante años de aplicación si no se audita explícitamente.</p>
+<p><strong>5. Un buen resultado global no garantiza una medición diferenciada de cada atributo.</strong> La actividad grupal, en particular, mostró una consistencia interna global razonablemente alta, pero un análisis más fino reveló que esa consistencia global no se traducía en una capacidad real de distinguir el desempeño específico en cada uno de los atributos evaluados. En otras palabras: el instrumento parecía funcionar bien "en promedio", pero esa apariencia ocultaba que no estaba diferenciando correctamente entre atributos distintos.</p>
+<p><strong>6. Los resultados grupales no podían atribuirse automáticamente a cada estudiante.</strong> Debido a cómo estaba diseñada la evaluación de la actividad grupal, no fue posible separar con solidez estadística cuánto de la nota obtenida por un grupo reflejaba el desempeño real del equipo y cuánto reflejaba, simplemente, la severidad particular del evaluador que le tocó en suerte a ese grupo. Esta limitación impide, en la práctica, reportar resultados grupales como si fueran evidencia individual de cada estudiante.</p>
+<h2>2.4 La conclusión que cambió el rumbo del proyecto</h2>
+<p>Ninguno de estos seis hallazgos se explica, en su origen, como un problema puramente estadístico. Todos ellos son, en un sentido más profundo, síntomas de una misma causa: <strong>al momento de diseñar la primera aproximación, los diez atributos institucionales no contaban todavía con una definición explícita de qué debía variar entre un estudiante y otro respecto de cada uno de ellos.</strong> Se había pasado directamente de un nombre institucional del perfil de egreso ("Liderazgo") a una pregunta o un criterio de evaluación, sin el paso intermedio que permite defender esa correspondencia: definir la variable que se pretende observar.</p>
+<p>Esta conclusión —y no un simple ajuste de redacción de preguntas— es lo que orientó el rumbo del proyecto hacia la etapa documentada en la Parte 3 de este reporte: construir, para cada uno de los diez atributos, una definición explícita, respaldada por evidencia, de qué significa cada uno como variable de medición.</p>
+<hr/>
+<h1>PARTE 3. CÓMO REDISEÑAMOS LOS DIEZ ATRIBUTOS</h1>
+<h2>3.1 De etiquetas a variables: los Construct Maps</h2>
+<p>Para cada uno de los diez atributos, el equipo del proyecto construyó lo que en este documento llamamos un <strong>mapa de progresión</strong>. Un mapa de progresión especifica:</p>
+<ul>
+<li>Una <strong>definición operativa</strong> del atributo: qué representa, sustantivamente, y qué queda fuera de esa definición.</li>
+<li>Una <strong>variable progresiva</strong>: el eje concreto a lo largo del cual varía el desarrollo del atributo entre distintos estudiantes.</li>
+<li>Un conjunto de <strong>niveles ordenados</strong> (típicamente cuatro), que describen formas cualitativamente distintas de manifestar el atributo, desde una manifestación inicial pero genuina hasta una manifestación más sofisticada, observable en algunos estudiantes al momento del ingreso.</li>
+<li><strong>Fronteras explícitas</strong> frente a atributos vecinos, para evitar que una misma actuación de un estudiante se compute automáticamente como evidencia de dos atributos distintos sin una regla clara.</li>
+</ul>
+<p>Un principio orientó la construcción de los diez mapas de manera transversal: <strong>el nivel inicial de cada progresión no representa ausencia, error o desconocimiento</strong>, sino una manifestación mínima pero genuina y observable del atributo. Del mismo modo, <strong>el nivel superior no representa desempeño profesional ni un estándar que toda la cohorte deba alcanzar</strong>, sino una manifestación más desarrollada, observable en una parte de los estudiantes que ingresan a la universidad.</p>
+<h2>3.2 La validación con un panel de especialistas</h2>
+<p>Los diez mapas de progresión, en su versión inicial, fueron sometidos a la revisión de un <strong>panel de cinco especialistas externos</strong>, con experiencia complementaria en las distintas áreas cubiertas por los atributos institucionales. Cada especialista evaluó, para cada uno de los diez mapas, cuatro dimensiones de calidad: la claridad de su redacción, el orden y la progresión lógica entre sus niveles, la pertinencia de su contenido respecto del atributo que declara medir, y la ausencia de sesgos que pudieran perjudicar sistemáticamente a algún grupo de estudiantes.</p>
+<p>Además de esta evaluación cuantitativa, cada especialista aportó comentarios cualitativos detallados, que fueron analizados de manera sistemática y triangulados con los resultados cuantitativos para llegar a un diagnóstico integrado, mapa por mapa.</p>
+<h2>3.3 Qué mostró la validación experta</h2>
+<p>La validación permitió distinguir, con fundamento, entre mapas que podían mantenerse prácticamente sin cambios y mapas que requerían una revisión más profunda. En ningún caso esta decisión se basó en un único número o umbral estadístico: se basó en la triangulación entre la evaluación cuantitativa del panel, sus comentarios cualitativos, y un examen adicional de literatura especializada focalizado en los atributos que mostraron señales de alerta más claras.</p>
+<p>Dos atributos concentraron la señal cuantitativa más favorable del conjunto: Seguridad y riesgos, y Trabajo inter y multidisciplinario, cuyos mapas requirieron únicamente ajustes focalizados. En el extremo opuesto, Teoría de innovación y emprendimiento concentró la señal más desfavorable, de manera relativamente generalizada entre los cuatro criterios evaluados por el panel, lo que motivó su reespecificación estructural.</p>
+<h2>3.4 Cuatro tipos de ajuste</h2>
+<p>Como resultado de este proceso, cada uno de los diez mapas recibió uno de cuatro tipos de intervención:</p>
+<ul>
+<li><strong>Ajuste de formulación</strong> (2 atributos: Seguridad y riesgos; Trabajo inter y multidisciplinario): el mapa conservó su estructura y su variable original, con precisiones focalizadas de alcance o de calibración de sus niveles.</li>
+<li><strong>Refinamiento conceptual</strong> (4 atributos: Liderazgo; Trabajo grupal e individual; Interacción con usuarios reales; Ética y profesionalismo): el mapa conservó una progresión única, pero su variable fue redefinida de manera sustantiva a partir de la evidencia experta.</li>
+<li><strong>Reespecificación estructural</strong> (4 atributos: Comunicación; Diseño; Teoría de innovación y emprendimiento; Economía y gestión): el mapa pasó de una progresión única a dos o tres progresiones relacionadas dentro del mismo atributo, porque la evidencia mostró que una sola variable no alcanzaba a representar adecuadamente su complejidad sustantiva.</li>
+</ul>
+<p>Es importante subrayar que ninguno de los diez mapas se dejó sin revisión: todos fueron examinados con el mismo estándar; la diferencia entre ellos radica en la magnitud del ajuste que la evidencia disponible permitió sostener, no en un tratamiento desigual del proceso.</p>
+<p>Un principio metodológico se mantuvo constante en las cuatro decisiones de reespecificación estructural: la evidencia cuantitativa del panel <strong>no se interpretó, por sí sola</strong>, como prueba de que un atributo debía dividirse en más de una dimensión. Esa decisión se tomó únicamente cuando la señal cuantitativa, examinada junto con los comentarios cualitativos y con literatura especializada adicional, permitió sostener una hipótesis sustantiva de multidimensionalidad — no como respuesta automática a un número por debajo de un umbral.</p>
+<hr/>
+<h1>PARTE 4. LOS DIEZ ATRIBUTOS INSTITUCIONALES, REDISEÑADOS</h1>
+<h2>4.1 Panorama general</h2>
+<p>La siguiente tabla resume la arquitectura resultante para los diez atributos institucionales tras el proceso de rediseño y validación descrito en la Parte 3.</p>
+<p><strong>Tabla 1.</strong> <em>Arquitectura resultante de los diez atributos</em></p>
+<table>
+<thead>
+<tr>
+<th>Atributo</th>
+<th>Estructura</th>
+<th style="text-align:right">N.º de dimensiones</th>
+<th>Tipo de ajuste recibido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Comunicación</td>
+<td>Con dos dimensiones (construcción del mensaje; interpretación y regulación de la interacción)</td>
+<td style="text-align:right">2</td>
+<td>Reespecificación estructural</td>
+</tr>
+<tr>
+<td>Trabajo grupal e individual</td>
+<td>Una dimensión, refinada</td>
+<td style="text-align:right">1</td>
+<td>Refinamiento conceptual</td>
+</tr>
+<tr>
+<td>Interacción con usuarios reales</td>
+<td>Una dimensión, refinada</td>
+<td style="text-align:right">1</td>
+<td>Refinamiento conceptual</td>
+</tr>
+<tr>
+<td>Diseño</td>
+<td>Con tres dimensiones (estructuración del problema; amplitud de alternativas; regulación mediante evidencia)</td>
+<td style="text-align:right">3</td>
+<td>Reespecificación estructural</td>
+</tr>
+<tr>
+<td>Teoría de innovación y emprendimiento</td>
+<td>Con dos dimensiones (innovación; emprendimiento)</td>
+<td style="text-align:right">2</td>
+<td>Reespecificación estructural</td>
+</tr>
+<tr>
+<td>Seguridad y riesgos</td>
+<td>Una dimensión, con alcance ajustado</td>
+<td style="text-align:right">1</td>
+<td>Ajuste de formulación</td>
+</tr>
+<tr>
+<td>Liderazgo</td>
+<td>Una dimensión, refinada</td>
+<td style="text-align:right">1</td>
+<td>Refinamiento conceptual</td>
+</tr>
+<tr>
+<td>Economía y gestión</td>
+<td>Con dos dimensiones (razonamiento de viabilidad; gestión de la implementación)</td>
+<td style="text-align:right">2</td>
+<td>Reespecificación estructural</td>
+</tr>
+<tr>
+<td>Ética y profesionalismo</td>
+<td>Una dimensión, refinada</td>
+<td style="text-align:right">1</td>
+<td>Refinamiento conceptual</td>
+</tr>
+<tr>
+<td>Trabajo inter y multidisciplinario</td>
+<td>Una dimensión, recalibrada</td>
+<td style="text-align:right">1</td>
+<td>Ajuste de formulación</td>
+</tr>
+</tbody>
+</table>
+<p><em>Ningún atributo de esta tabla se declara "validado". Todos constituyen hipótesis sustantivas revisadas, pendientes de contraste con datos reales de estudiantes (ver Parte 5).</em></p>
+<p>De los diez atributos, seis conservan una progresión única y cuatro requieren más de una dimensión relacionada. Esta diferencia no responde a una decisión de conveniencia operativa en ningún sentido: no se forzó a los diez atributos hacia una progresión única por simplicidad, ni se dividieron atributos en múltiples dimensiones por sofisticación metodológica. Cada decisión respondió a la naturaleza sustantiva observable del constructo y a la evidencia experta disponible.</p>
+<h2>4.2 Los diez atributos, uno por uno</h2>
+<p>A continuación se presenta, para cada atributo, su definición actualizada y su progresión completa: los cuatro niveles ordenados que describen formas cada vez más desarrolladas de manifestar el atributo, desde una manifestación inicial pero genuina hasta una manifestación más sofisticada, observable en algunos estudiantes al momento de ingresar a la universidad. Se incluye además, para cada atributo, qué <strong>no</strong> debe confundirse con él — la información más útil, en la práctica, para evitar malas interpretaciones de futuros resultados. El detalle completo de cada nivel, su fundamento en la literatura especializada y la trazabilidad de cada decisión de rediseño se documentan en el reporte científico.</p>
+<h3>Comunicación</h3>
+<p><em>Qué mide:</em> la construcción y adaptación de un mensaje, y la capacidad de interpretar y regular la propia participación en una interacción con otra persona. Se organiza en dos dimensiones porque emitir y recibir/regular no siempre se desarrollan al mismo ritmo en un mismo estudiante.</p>
+<p><em>Dimensión 1 — Construcción y adaptación del mensaje:</em> comunica información pertinente → organiza el mensaje según un propósito → adapta el mensaje a la audiencia y el contexto → ajusta estratégicamente el mensaje cuando cambian el propósito, la audiencia o las condiciones.</p>
+<p><em>Dimensión 2 — Recepción y regulación de la interacción:</em> atiende la respuesta del otro → interpreta la respuesta del interlocutor → integra aportes y retroalimentación → regula la interacción para sostener el entendimiento.</p>
+<p><em>No debe confundirse con:</em> cantidad de habla, protagonismo, extroversión, seguridad escénica ni corrección gramatical u ortográfica aislada.</p>
+<h3>Trabajo grupal e individual</h3>
+<p><em>Qué mide:</em> la integración de la contribución individual de un estudiante al trabajo colectivo. Una contribución que todavía depende de orientación o de tareas asignadas por otros no se interpreta como ausencia de desarrollo, sino como una manifestación inicial legítima.</p>
+<p><em>Progresión:</em> contribuye bajo orientación al trabajo colectivo → coordina su contribución con otras personas → integra aportes y negocia diferencias → regula su contribución según las necesidades del colectivo.</p>
+<p><em>No debe confundirse con:</em> Liderazgo. Coordinar bien la propia tarea dentro de un equipo no equivale, por sí solo, a liderar — a menos que exista, además, una orientación intencional a fortalecer la capacidad de acción de otras personas.</p>
+<h3>Interacción con usuarios reales</h3>
+<p><em>Qué mide:</em> en qué medida la comprensión y las decisiones de un estudiante se fundamentan y se modifican a partir de evidencia de personas usuarias o afectadas por una situación.</p>
+<p><em>Progresión:</em> reconoce usuarios y personas afectadas → comprende mediante evidencia de usuarios → contrasta y revisa su comprensión → incorpora evidencia en sus decisiones.</p>
+<p><em>No debe confundirse con:</em> la cantidad de contacto directo con personas usuarias. Haber interactuado más con usuarios no ubica, por sí solo, a un estudiante en un nivel más desarrollado; lo relevante es cuánto esa evidencia efectivamente influye en su comprensión y sus decisiones.</p>
+<h3>Diseño</h3>
+<p><em>Qué mide:</em> el atributo que recibió la revisión más extensa del proyecto. Se organiza en tres dimensiones relacionadas pero distinguibles, que una misma tarea de diseño puede evidenciar a la vez, aunque deben puntuarse por separado.</p>
+<p><em>Dimensión 1 — Problematización (estructurar el desafío):</em> reconoce y sitúa el problema → lo delimita explícitamente → lo estructura relacionando criterios y restricciones → reencuadra su representación del problema a la luz de nueva evidencia.</p>
+<p><em>Dimensión 2 — Ideación (explorar alternativas):</em> formula una alternativa pertinente → diversifica generando varias alternativas distintas → diferencia enfoques o estrategias → reconfigura y combina alternativas de maneras nuevas.</p>
+<p><em>Dimensión 3 — Evaluación y regulación mediante evidencia:</em> justifica una decisión con razones → evalúa alternativas mediante criterios explícitos → contrasta decisiones mediante evidencia (pruebas, prototipos, observación) → regula y modifica decisiones a partir de esa evidencia.</p>
+<p><em>No debe confundirse con:</em> un puntaje único de "Diseño". No existe todavía fundamento para promediar las tres dimensiones en un solo número; deben reportarse como un perfil.</p>
+<h3>Teoría de innovación y emprendimiento</h3>
+<p><em>Qué mide:</em> el atributo con la señal experta más desfavorable del conjunto original, ahora separado en dos dimensiones para evitar que una subordine a la otra. Su nivel inicial evita, deliberadamente, definirse por una comprensión ingenua o por asociar innovación solo con "novedad".</p>
+<p><em>Dimensión 1 — Comprensión de la innovación:</em> reconoce innovación en contexto → diferencia idea e innovación → explica la innovación como proceso de creación de valor → evalúa una interpretación de innovación con evidencia.</p>
+<p><em>Dimensión 2 — Comprensión del emprendimiento:</em> reconoce emprendimiento en contexto → lo diferencia de tener una idea o de crear formalmente una empresa → lo explica como proceso de creación de valor → evalúa una interpretación de emprendimiento con evidencia.</p>
+<p><em>No debe confundirse con:</em> intención declarada de emprender, experiencia previa en startups, ni la figura del "emprendedor" como protagonista individual — la creación de valor se entiende en sentido amplio: social, ambiental, cultural u organizacional, no solo comercial.</p>
+<h3>Seguridad y riesgos</h3>
+<p><em>Qué mide:</em> la estructuración y revisión del razonamiento sobre peligro, exposición, daño y control. Su alcance no se limita a seguridad ocupacional: incluye daños posibles a personas, entorno, sistemas, información o infraestructura.</p>
+<p><em>Progresión:</em> reconoce peligros y posibles afectados → explica cómo puede producirse el daño → compara riesgos y valora medidas de control → revisa el riesgo y la adecuación de los controles ante nueva información.</p>
+<p><em>No debe confundirse con:</em> una conducta segura observada. El atributo mide razonamiento sobre el riesgo, no comportamiento; y su nivel superior fue calibrado para no exigir gestión profesional del riesgo residual.</p>
+<h3>Liderazgo</h3>
+<p><em>Qué mide:</em> la contribución intencional y responsable a orientar y fortalecer la capacidad de acción de un grupo — no la cantidad de influencia personal ejercida sobre otros.</p>
+<p><em>Progresión:</em> moviliza una acción necesaria para el grupo → orienta la acción colectiva hacia un propósito compartido → facilita la participación y las decisiones del grupo → fortalece y distribuye la capacidad colectiva, favoreciendo que otras personas asuman iniciativa.</p>
+<p><em>No debe confundirse con:</em> cargo formal, centralidad, dominancia o cantidad de habla. Su nivel más desarrollado no es "dirigir más", sino ceder espacio deliberadamente cuando eso fortalece la capacidad de acción del colectivo.</p>
+<h3>Economía y gestión</h3>
+<p><em>Qué mide:</em> dos funciones relacionadas pero distinguibles — razonar sobre la viabilidad de una iniciativa, y organizar y ajustar su implementación práctica. Un estudiante puede desarrollar una sin necesariamente desarrollar la otra.</p>
+<p><em>Dimensión 1 — Razonamiento económico y viabilidad:</em> reconoce condiciones de viabilidad → relaciona recursos y consecuencias → compara alternativas de viabilidad → reevalúa la viabilidad ante cambios.</p>
+<p><em>Dimensión 2 — Gestión de la implementación:</em> identifica necesidades de implementación → organiza la implementación (acciones, tiempos, responsables) → coordina condiciones de ejecución → replanifica ante cambios en las condiciones o los resultados.</p>
+<p><em>No debe confundirse con:</em> conocimientos de contabilidad, finanzas o herramientas profesionales de gestión de proyectos. "Recursos" se entiende en sentido amplio —tiempo, información, esfuerzo, trabajo de personas, no solo dinero— para no favorecer a quien ya tiene vocabulario técnico-financiero.</p>
+<h3>Ética y profesionalismo</h3>
+<p><em>Qué mide:</em> la amplitud, integración y fundamentación del juicio ético-profesional. El profesionalismo (honestidad, transparencia, límites de la propia competencia) es transversal a toda la progresión, no un nivel aparte.</p>
+<p><em>Progresión:</em> reconoce una cuestión ética → analiza a las personas afectadas y las responsabilidades involucradas → compara y justifica cursos de acción → delibera y revisa su juicio frente a tensiones o incertidumbre.</p>
+<p><em>No debe confundirse con:</em> la memorización de códigos profesionales, ni con dar la respuesta socialmente esperada. El diseño de tareas futuras deberá evitar premiar la opción "correcta" en apariencia por sobre la calidad efectiva del razonamiento que la sostiene.</p>
+<h3>Trabajo inter y multidisciplinario</h3>
+<p><em>Qué mide:</em> el mapa con el respaldo experto más sólido del conjunto original. Distingue una fase de aportes diferenciados por área (multidisciplinariedad) de una fase en que esos aportes se modifican mutuamente (interdisciplinariedad).</p>
+<p><em>Progresión:</em> reconoce aportes de diferentes áreas de conocimiento → relaciona aportes complementarios → integra perspectivas que se modifican mutuamente → revisa críticamente vacíos o tensiones en esa integración.</p>
+<p><em>No debe confundirse con:</em> el número de disciplinas mencionadas ni la composición formal de un equipo. Lo que se evalúa es la calidad de la articulación entre perspectivas, no la familiaridad con nombres de carreras.</p>
+<h2>4.3 Fronteras entre atributos: evitar contar lo mismo dos veces</h2>
+<p>Varios de los diez atributos pueden manifestarse en una misma situación observada, lo que genera un riesgo metodológico concreto: que una misma actuación de un estudiante se compute automáticamente como evidencia de más de un atributo, sin una regla explícita que lo justifique. El proceso de rediseño precisó fronteras explícitas entre los pares de atributos que resultaron más porosos durante la validación experta. Algunos ejemplos, a modo ilustrativo:</p>
+<ul>
+<li>Coordinar la propia contribución dentro de un equipo (Trabajo grupal e individual) no equivale, por sí solo, a Liderazgo — a menos que exista, además, una orientación intencional hacia fortalecer la capacidad de acción de otras personas.</li>
+<li>Identificar la participación de personas usuarias en un caso (Interacción con usuarios reales) no equivale, por sí solo, a Diseño — a menos que, además, existan decisiones de estructuración, exploración o regulación de una solución.</li>
+<li>Comunicar con claridad una propuesta (Comunicación) no debe confundirse con la calidad del razonamiento que esa propuesta contiene, la cual corresponde al atributo sustantivo que se está comunicando (Diseño, Ética, Economía y gestión, etc.).</li>
+</ul>
+<p>Estas fronteras no son un detalle técnico menor: son un insumo directo para el diseño de las tareas futuras del Hito 0, que deberán evitar que una misma respuesta se compute como evidencia redundante de varios atributos sin una regla de decisión explícita.</p>
+<hr/>
+<h1>PARTE 5. LA AGENDA HACIA UNA MEDICIÓN APLICABLE</h1>
+<h2>5.1 Qué falta para tener un instrumento, no solo una definición</h2>
+<p>Contar con diez mapas de progresión validados conceptualmente —el resultado principal documentado en las Partes 3 y 4— <strong>no equivale todavía a contar con un instrumento aplicable</strong>. Un mapa de progresión especifica qué se pretende medir; falta todavía definir cómo obtener evidencia suficiente para ubicar a un estudiante sobre esa variable, y cómo interpretar esa evidencia con solidez estadística.</p>
+<p>El desarrollo futuro del sistema debe completar una cadena de cuatro pasos, ninguno de los cuales puede omitirse sin debilitar la interpretación final de los resultados:</p>
+<blockquote>
+<p><strong>Definición del atributo → diseño de las tareas → reglas de puntuación → contraste con datos reales.</strong></p>
+</blockquote>
+<p>Las siguientes secciones resumen cada uno de estos pasos y su estado actual.</p>
+<h2>5.2 Diseño de tareas</h2>
+<p>Diseñar una tarea para el Hito 0 no consiste en redactar una pregunta más. Consiste en diseñar una <strong>situación capaz de generar evidencia observable y diferenciada</strong> sobre las distintas posiciones de la progresión definida para cada atributo. Una tarea bien diseñada debe: ofrecer una oportunidad real de manifestar el atributo; permitir diferenciar respuestas cualitativamente distintas entre sí; reducir al mínimo las exigencias ajenas al atributo (por ejemplo, vocabulario especializado innecesario o conocimientos previos desiguales entre estudiantes); ser adecuada para quien recién ingresa a la universidad; y admitir una puntuación coherente con la progresión definida.</p>
+<p>No todos los diez atributos requieren el mismo formato de tarea. Según su naturaleza, las tareas futuras podrán incluir, entre otros formatos: escenarios breves que piden razonar sobre una situación concreta; preguntas de opción múltiple diseñadas para representar distintas posiciones de una progresión (una alternativa metodológica conocida como <em>opción múltiple ordenada</em>); respuestas breves justificadas por escrito; y situaciones de desempeño, individuales o grupales, cuando el atributo requiere observar interacción o actuación en tiempo real. El principio que debe guiar esta decisión es que <strong>el formato de la tarea se derive de la naturaleza de cada atributo, y no de la conveniencia de aplicar un mismo formato a los diez</strong>.</p>
+<p>Un aprendizaje directo de la primera aproximación (Parte 2) que la nueva arquitectura ya incorpora desde el diseño: la evidencia obtenida de una actividad grupal debe distinguir explícitamente qué corresponde al producto del grupo en su conjunto y qué corresponde a la contribución identificable de cada estudiante — de modo que solo se reporten posiciones individuales cuando exista evidencia individual que las respalde.</p>
+<p>Esta etapa se encuentra, a la fecha de este reporte, en desarrollo conceptual inicial: no se han construido todavía prototipos completos de tareas para los diez atributos.</p>
+<h2>5.3 Cómo se puntuará cada tarea</h2>
+<p>Una vez diseñadas las tareas, debe definirse cómo se interpretarán y clasificarán las respuestas que efectivamente produzcan los estudiantes — un componente al que la literatura especializada llama <em>Outcome Space</em>. Este paso es indispensable porque, sin reglas explícitas, dos evaluadores distintos podrían interpretar de manera diferente una misma respuesta.</p>
+<p>Un punto que conviene explicitar para autoridades institucionales, porque suele asumirse erróneamente: <strong>el nivel de una progresión no se convierte automáticamente en una categoría de puntuación</strong>. Antes de fijar cómo se puntuará una tarea, es necesario examinar cómo se manifiestan empíricamente las respuestas reales de los estudiantes — un examen que solo puede hacerse con datos, en la etapa de pilotaje descrita en la sección siguiente.</p>
+<p>Para las tareas más abiertas, será necesario desarrollar guías de puntuación explícitas y ejemplos de respuestas reales que ilustren cada categoría, además de reglas claras para los casos ambiguos — incluyendo, de manera explícita, una categoría para "evidencia insuficiente para clasificar", que no debe confundirse con el nivel más bajo de la progresión: la ausencia de evidencia no equivale a un desarrollo mínimo del atributo, sino a la imposibilidad de emitir un juicio a partir de esa tarea en particular.</p>
+<h2>5.4 El pilotaje</h2>
+<p>Antes de que cualquier tarea nueva se aplique a una cohorte completa, debe someterse a un <strong>pilotaje</strong>: una aplicación a un grupo más reducido de estudiantes, cuyo propósito no es solo verificar que la logística de aplicación funciona, sino generar evidencia real sobre si las tareas diseñadas y las reglas de puntuación propuestas efectivamente funcionan como se esperaba.</p>
+<p>El pilotaje debe examinar, entre otros aspectos: si las tareas efectivamente diferencian a estudiantes con distinto desarrollo; si las categorías de puntuación propuestas se usan de manera consistente; si el orden de dificultad esperado coincide con lo observado en los datos; y si existen diferencias sistemáticas en el desempeño entre subgrupos de estudiantes que no deberían existir (por ejemplo, según el tipo de educación media de procedencia), lo que permitiría detectar sesgos no anticipados antes de una aplicación institucional más amplia.</p>
+<p>Un paso adicional, previo o paralelo al pilotaje a escala, consiste en observar directamente a un número reducido de estudiantes mientras resuelven las tareas —mediante entrevistas breves sobre cómo interpretaron cada consigna—, para verificar que efectivamente están razonando de la manera que el diseño de la tarea anticipó, y no llegando a la misma respuesta por una vía distinta a la prevista.</p>
+<h2>5.5 El modelo estadístico</h2>
+<p>Solo una vez recogidos los datos del pilotaje corresponde seleccionar el modelo estadístico apropiado para interpretar cada atributo — nunca antes. El principio metodológico central de esta etapa, ya aplicado de manera consistente en todo el proyecto, es que <strong>el modelo debe ajustarse al constructo, y no el constructo al modelo</strong>: no se elige primero una herramienta estadística y se adapta después la definición del atributo para que encaje en ella.</p>
+<p>Según el tipo de respuesta que efectivamente produzcan las tareas, el modelo apropiado podrá variar entre atributos: algunos podrán modelarse con herramientas ya utilizadas para diagnosticar la primera aproximación (documentadas en el reporte científico); los cuatro atributos con más de una dimensión requerirán, adicionalmente, modelos capaces de representar esa complejidad. Ningún modelo se preselecciona en este reporte para ningún atributo: esa decisión depende de evidencia que todavía no se ha producido.</p>
+<p>Esta etapa deberá examinar también, de manera sistemática, la consistencia entre distintos evaluadores en las tareas que requieran puntuación humana — un problema que, como se documentó en la Parte 2, limitó severamente el análisis de la primera aproximación y que la nueva arquitectura debe evitar desde el diseño mismo del sistema de evaluación.</p>
+<h2>5.6 Hoja de ruta y tiempos</h2>
+<p>La siguiente tabla resume las etapas pendientes del proyecto, en el orden en que deben desarrollarse. Es importante subrayar que esta hoja de ruta debe leerse como un <strong>ciclo</strong>, no como una secuencia estrictamente lineal: si la evidencia producida en cualquiera de las etapas 2 a 6 contradice un supuesto de un mapa de progresión, ese mapa debe revisarse — tal como ya ocurrió, durante esta misma etapa, con Diseño, Comunicación, Teoría de innovación y emprendimiento, y Economía y gestión.</p>
+<p><strong>Tabla 2.</strong> <em>Hoja de ruta hacia una medición aplicable</em></p>
+<table>
+<thead>
+<tr>
+<th>Etapa</th>
+<th>Producto esperado</th>
+<th>Estado actual</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Consolidación de los mapas de progresión</td>
+<td>Diez mapas revisados y estabilizados</td>
+<td>Realizado en esta etapa (hipótesis vigente; pendiente de contraste empírico)</td>
+</tr>
+<tr>
+<td>2. Diseño de tareas</td>
+<td>Prototipos de tareas alineados con cada progresión</td>
+<td>En desarrollo conceptual inicial</td>
+</tr>
+<tr>
+<td>3. Reglas de puntuación</td>
+<td>Guías de puntuación y reglas de decisión</td>
+<td>Pendiente; depende del avance de la etapa 2</td>
+</tr>
+<tr>
+<td>4. Verificación con estudiantes</td>
+<td>Evidencia de que las tareas se interpretan como se anticipó</td>
+<td>Pendiente</td>
+</tr>
+<tr>
+<td>5. Pilotaje</td>
+<td>Datos de una muestra de estudiantes</td>
+<td>Pendiente; tamaño de muestra aún por definir</td>
+</tr>
+<tr>
+<td>6. Modelo estadístico</td>
+<td>Modelos calibrados por atributo</td>
+<td>Pendiente; depende de los datos del pilotaje</td>
+</tr>
+<tr>
+<td>7. Aplicación institucional ampliada</td>
+<td>Hito 0 operativo para cohortes completas de ingreso</td>
+<td>Posterior, condicionada a las etapas anteriores</td>
+</tr>
+</tbody>
+</table>
+<p>Este reporte no fija fechas específicas para cada etapa: los tiempos dependen de la disponibilidad de recursos que la Facultad decida asignar al proyecto, decisión que corresponde a las autoridades institucionales y que excede el alcance metodológico de este documento. Sí es posible afirmar, con base en la naturaleza de cada etapa, que las etapas 2 y 3 (diseño de tareas y reglas de puntuación) son secuenciales y no pueden comprimirse significativamente sin comprometer la calidad del instrumento resultante; que la etapa 5 (pilotaje) requiere, como mínimo, un semestre completo de planificación y aplicación; y que la etapa 7 (aplicación institucional ampliada) no debería iniciarse sin haber completado, como mínimo, un ciclo completo de pilotaje sobre la nueva arquitectura.</p>
+<h2>5.7 Criterios para autorizar una aplicación institucional ampliada</h2>
+<p>Antes de escalar la nueva arquitectura de medición a una aplicación institucional amplia, debería existir evidencia razonable, evaluada <strong>en conjunto y no mediante un único indicador</strong>, sobre los siguientes puntos:</p>
+<ul>
+<li>Mapas de progresión suficientemente estabilizados, sin observaciones estructurales pendientes.</li>
+<li>Tareas efectivamente alineadas con los mapas que pretenden observar.</li>
+<li>Evidencia de que las tareas se interpretan como se anticipó en su diseño.</li>
+<li>Reglas de puntuación aplicadas de manera consistente por distintos evaluadores, cuando corresponda.</li>
+<li>Evidencia inicial sobre si cada atributo se comporta, en los datos, como se hipotetizó (progresión única o con más de una dimensión).</li>
+<li>Precisión suficiente para el nivel de reporte que se pretenda sostener (cohorte, carrera, atributo o estudiante individual).</li>
+<li>Ausencia de diferencias sistemáticas no justificadas entre subgrupos de estudiantes.</li>
+<li>Un sistema de reporte de resultados coherente con el propósito diagnóstico y formativo del Hito 0, y ajeno a cualquier uso de selección o clasificación de estudiantes.</li>
+</ul>
+<p>Ningún criterio aislado —por ejemplo, un único coeficiente estadístico— debe considerarse suficiente por sí solo para autorizar el escalamiento del sistema. La decisión debe fundamentarse en la evaluación conjunta de estos criterios, siguiendo la misma lógica de triangulación de evidencia aplicada durante todo este proyecto.</p>
+<hr/>
+<h1>PARTE 6. APRENDIZAJES, RIESGOS Y RECOMENDACIONES</h1>
+<h2>6.1 Los aprendizajes centrales del proceso</h2>
+<p><strong>Un atributo institucional no constituye automáticamente una variable de medición.</strong> Que la Facultad declare que valora Liderazgo o Diseño como parte del perfil de egreso no establece, por sí solo, qué varía entre distintos estudiantes respecto de ese atributo, ni cómo se ordenan formas más y menos desarrolladas de manifestarlo. Ese paso —de declaración institucional a variable medible— exige un trabajo metodológico explícito, del tipo desarrollado en este proyecto.</p>
+<p><strong>Una pregunta o un criterio no equivale, por sí solo, a un atributo.</strong> Declarar administrativamente que "esta pregunta mide Liderazgo" no basta para sostener conclusiones sobre Liderazgo, si no existe una cadena completa y verificable entre la definición del atributo, la evidencia que la tarea efectivamente produce, y la interpretación que se hace de esa evidencia.</p>
+<p><strong>Una buena consistencia global no implica una buena medición diferenciada.</strong> Un instrumento puede parecer, en un análisis superficial, internamente consistente y bien ajustado, sin que ello demuestre que está diferenciando correctamente entre los distintos atributos que declara medir por separado.</p>
+<p><strong>Los mapas de progresión son instrumentos de razonamiento, no descripciones definitivas.</strong> Que varios de los diez mapas hayan cambiado, algunos de manera sustancial, entre su versión inicial y su versión revisada no representa una falla del trabajo previo: representa el funcionamiento esperado de un enfoque que trata los constructos como hipótesis revisables, sometidas a evidencia, y no como definiciones protegidas de ella.</p>
+<p><strong>La multidimensionalidad no debe suponerse ni evitarse por conveniencia.</strong> La decisión de si un atributo requiere una o más de una dimensión de progresión debe basarse en su naturaleza sustantiva y en la evidencia disponible — nunca en la comodidad operativa de producir, en todos los casos, un único puntaje.</p>
+<p><strong>El nivel inicial de una progresión también debe representar aprendizaje real, no su ausencia.</strong> Este principio, aplicado de manera transversal a los diez atributos, es especialmente relevante para evitar que el diagnóstico se lea, de manera errónea, como una evaluación de déficit.</p>
+<p><strong>La evidencia grupal exige cautela antes de atribuirse a cada estudiante.</strong> Un desempeño evaluado a nivel de grupo no puede trasladarse automáticamente a cada integrante sin evidencia adicional que respalde esa desagregación — una lección directa del diagnóstico de la primera aproximación.</p>
+<p><strong>La validación de un instrumento es un proceso acumulativo, no un evento único.</strong> No existe un momento en que un instrumento "queda validado" de manera definitiva; la confianza en sus resultados se construye progresivamente, acumulando evidencia de distinto tipo a lo largo del tiempo.</p>
+<h2>6.2 Qué no se debe volver a hacer</h2>
+<p>Como salvaguarda institucional derivada directamente de lo aprendido en este proyecto, se recomienda evitar explícitamente:</p>
+<ul>
+<li>Volver a asumir que una sola pregunta o un solo criterio por atributo constituye evidencia suficiente para un diagnóstico.</li>
+<li>Interpretar la consistencia global de un instrumento como prueba de que mide de manera diferenciada los diez atributos.</li>
+<li>Utilizar una puntuación grupal como si fuera una puntuación individual, sin evidencia adicional que respalde esa desagregación.</li>
+<li>Imponer un puntaje único a un atributo que la evidencia muestra como multidimensional, sin respaldo empírico para esa combinación.</li>
+<li>Tratar los mapas de progresión de este reporte como si ya estuvieran validados con datos reales de estudiantes.</li>
+<li>Escalar una nueva versión del Hito 0 a toda la Facultad sin haber completado, como mínimo, un ciclo de pilotaje sobre la nueva arquitectura.</li>
+</ul>
+<h2>6.3 Ocho recomendaciones institucionales</h2>
+<p><strong>1. Consolidar los mapas de progresión revisados</strong>, mediante una revisión final de consistencia del conjunto y, cuando corresponda, una segunda ronda focalizada de revisión experta para los atributos con reespecificación estructural, antes de avanzar a la etapa siguiente.</p>
+<p><strong>2. Avanzar hacia el diseño de tareas desde las progresiones ya definidas, y no desde los nombres de los atributos</strong>, evitando repetir la lógica de la primera aproximación.</p>
+<p><strong>3. Construir las reglas de puntuación antes de aplicar cualquier tarea nueva a estudiantes</strong>, y no diseñarlas después de observar respuestas reales sin una hipótesis previa.</p>
+<p><strong>4. Pilotar antes de cualquier aplicación institucional ampliada</strong>, entendiendo el pilotaje como parte constitutiva del desarrollo del instrumento, no solo como una prueba logística.</p>
+<p><strong>5. Verificar, antes de interpretar psicométricamente cualquier tarea, que los estudiantes efectivamente la interpretan como se anticipó</strong> en su diseño — particularmente relevante para los formatos de opción múltiple ordenada y para los escenarios más complejos.</p>
+<p><strong>6. Diseñar con rigor la evaluación de desempeños grupales o evaluados por personas</strong>, asegurando evidencia individual defendible cuando se busque reportar a ese nivel, y suficiente cruce entre evaluadores y respuestas cuando se busque estudiar su consistencia.</p>
+<p><strong>7. Mantener un enfoque orientado a las progresiones definidas al interpretar resultados</strong>, y no únicamente al rendimiento relativo de la cohorte.</p>
+<p><strong>8. Construir reportes orientados a la acción formativa</strong>, que ayuden a la coordinación y al cuerpo docente a comprender qué necesitan los y las estudiantes al ingresar, y no que se limiten a producir una cifra de reporte administrativo.</p>
+<p>Estas recomendaciones se circunscriben al desarrollo y uso del Hito 0, y no se extienden a otros hitos del sistema de seguimiento del perfil de egreso que la Facultad pudiera desarrollar en el futuro.</p>
+<h2>6.4 Implicaciones para la gestión de la Facultad</h2>
+<p><strong>El Hito 0 debe mantenerse como una medición diagnóstica y formativa.</strong> No debería, en ninguna etapa futura de su desarrollo, transformarse en un mecanismo de selección, exclusión o certificación de estudiantes.</p>
+<p><strong>La información que produzca debe usarse para orientar decisiones curriculares</strong>, no para etiquetar o clasificar a los y las estudiantes: identificar qué formas de razonamiento o actuación son menos frecuentes en una cohorte determinada puede orientar dónde reforzar apoyos o énfasis formativos tempranos.</p>
+<p><strong>La estructura multidimensional de cuatro de los diez atributos debe conservarse en el reporte institucional</strong>, cuando la evidencia la respalde, en lugar de reducirse artificialmente a un único puntaje de innovación y emprendimiento. Un reporte comprensible es preferible a un reporte simple si esa simplicidad implica perder información relevante para la toma de decisiones.</p>
+<p><strong>Los diez mapas de progresión deberían gobernarse como documentos institucionales vivos</strong>, explícitamente revisables a partir de nueva evidencia, y no como definiciones fijas una vez cerrado este ciclo de trabajo. Cualquier modificación futura debería quedar registrada de manera trazable: qué problema la motivó, qué evidencia la respalda, y qué cambio se introdujo.</p>
+<p><strong>La capacitación de docentes y evaluadores involucrados en la aplicación del Hito 0 será una condición necesaria</strong>, no accesoria, para la calidad de los datos que el sistema produzca en sus etapas futuras.</p>
+<hr/>
+<h1>PARTE 7. CONCLUSIÓN Y ESTADO DEL PROYECTO</h1>
+<h2>7.1 Qué se logró en esta etapa</h2>
+<p>El proyecto documentado en este reporte partió de una primera aproximación institucional del Hito 0 que permitió una primera experiencia real de aplicación a escala de cohorte, pero cuyo diagnóstico retrospectivo mostró limitaciones sustantivas de cobertura, de dificultad, de consistencia entre evaluadores y de interpretación de la evidencia grupal.</p>
+<p>Ese diagnóstico condujo a una decisión de fondo: en lugar de ajustar incrementalmente las preguntas y criterios existentes, el proyecto concentró su desarrollo en definir explícitamente qué debía medir cada uno de los diez atributos institucionales. Ese trabajo se sometió a la revisión de un panel de cinco especialistas externos, y su resultado se refinó o reespecificó según lo que esa evidencia permitió sostener en cada caso.</p>
+<p><strong>El resultado principal de esta etapa no es un nuevo instrumento terminado, sino una arquitectura de medición mucho más explícita y defendible que la que existía al inicio del proyecto</strong>, sobre la cual construir, en las etapas siguientes, un instrumento que sí pueda aplicarse con confianza institucional a cohortes completas de ingreso.</p>
+<h2>7.2 Qué falta y qué se necesita para lograrlo</h2>
+<p>Falta, en el orden establecido en la Parte 5 de este reporte: diseñar las tareas o situaciones capaces de generar evidencia sobre cada una de las progresiones ya definidas; construir las reglas de puntuación correspondientes; verificar, con estudiantes reales, que las tareas se interpretan como se anticipó; pilotar el conjunto resultante con una muestra de estudiantes; y seleccionar, a partir de esos datos, el modelo estadístico apropiado para cada atributo.</p>
+<p>Ninguna de estas etapas puede completarse de manera significativamente acelerada sin comprometer la calidad y la defendibilidad del instrumento resultante. La decisión sobre el ritmo y los recursos que la Facultad asigne a estas etapas corresponde a sus autoridades institucionales, y debería considerar que <strong>una aplicación institucional ampliada, apresurada y sin evidencia propia, expondría a la Facultad al mismo tipo de limitaciones que este mismo proyecto identificó en la primera aproximación</strong> — el riesgo que este reporte busca, precisamente, ayudar a evitar.</p>
+<h2>7.3 Estado del proyecto, componente por componente</h2>
+<p><strong>Tabla 3.</strong> <em>Estado del proyecto al cierre de este reporte</em></p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Diagnóstico de la primera aproximación institucional</td>
+<td>Completado</td>
+</tr>
+<tr>
+<td>Mapas de progresión iniciales</td>
+<td>Completados</td>
+</tr>
+<tr>
+<td>Validación experta</td>
+<td>Completada para esta ronda de revisión</td>
+</tr>
+<tr>
+<td>Mapas de progresión revisados (los diez atributos)</td>
+<td>Disponibles como hipótesis vigentes, pendientes de contraste con datos reales</td>
+</tr>
+<tr>
+<td>Diseño de tareas</td>
+<td>En desarrollo conceptual inicial</td>
+</tr>
+<tr>
+<td>Reglas de puntuación</td>
+<td>Pendiente</td>
+</tr>
+<tr>
+<td>Verificación con estudiantes</td>
+<td>No producida</td>
+</tr>
+<tr>
+<td>Pilotaje</td>
+<td>No realizado</td>
+</tr>
+<tr>
+<td>Modelo estadístico de la nueva arquitectura</td>
+<td>Pendiente</td>
+</tr>
+<tr>
+<td>Reporte institucional definitivo del Hito 0</td>
+<td>En esta etapa de comunicación a autoridades institucionales</td>
+</tr>
+</tbody>
+</table>
+<p>La conclusión que este reporte deja establecida para la toma de decisiones institucionales es la siguiente: <strong>la Facultad cuenta hoy con una definición mucho más sólida y defendible de qué debe medir el Hito 0 en cada uno de sus diez atributos. Construir el instrumento que efectivamente los mida es la tarea de la etapa siguiente</strong>, cuyos pasos, tiempos relativos y criterios de decisión quedan documentados en este reporte.</p>
+<hr/>
+<h1>GLOSARIO BREVE DE TÉRMINOS TÉCNICOS</h1>
+<p><strong>Mapa de progresión (Construct Map).</strong> Definición explícita de un atributo, organizada como una escala de niveles ordenados, desde una manifestación inicial pero genuina hasta una manifestación más desarrollada.</p>
+<p><strong>Waypoint / nivel.</strong> Cada una de las posiciones cualitativamente distinguibles dentro de un mapa de progresión (habitualmente, cuatro por atributo o dimensión).</p>
+<p><strong>Dimensión / strand.</strong> Cuando un atributo requiere más de una progresión relacionada para representarse adecuadamente (por ejemplo, los tres aspectos de Diseño), cada una de esas progresiones se llama una dimensión.</p>
+<p><strong>Modelamiento de constructos (construct modelling).</strong> Enfoque metodológico —desarrollado por Mark Wilson— que organiza el diseño de un sistema de medición en cuatro pasos: definir el constructo, diseñar tareas, definir reglas de puntuación, y contrastar con datos reales.</p>
+<p><strong>Panel de especialistas / juicio experto.</strong> Revisión de una definición o instrumento por parte de un grupo de personas con experiencia relevante, usada como una de las fuentes de evidencia sobre la calidad de una medición.</p>
+<p><strong>Opción múltiple ordenada (Ordered Multiple Choice).</strong> Formato de pregunta cuyas alternativas no se clasifican solo como correcta o incorrecta, sino que están diseñadas para representar distintas posiciones de una progresión.</p>
+<p><strong>Reglas de puntuación (Outcome Space).</strong> Conjunto de criterios que traducen una respuesta observada en una categoría de puntuación, vinculada a los niveles del mapa de progresión correspondiente.</p>
+<p><strong>Pilotaje.</strong> Aplicación de un instrumento a un grupo reducido de estudiantes, previa a su aplicación institucional ampliada, cuyo propósito es generar evidencia real sobre su funcionamiento.</p>
+<p><strong>Modelo estadístico de medición (Measurement Model).</strong> Herramienta estadística que permite contrastar, con datos reales, si una progresión hipotetizada se comporta efectivamente como se esperaba (por ejemplo, los modelos de la familia Rasch, ya utilizados para diagnosticar la primera aproximación del Hito 0).</p>
+<p><strong>Sesgo entre subgrupos (fairness).</strong> Diferencia sistemática e injustificada en los resultados de un instrumento entre distintos grupos de estudiantes (por ejemplo, según tipo de educación media de procedencia), no atribuible a diferencias reales en el atributo medido.</p>
+<hr/>
+<p><em>Este documento resume, para autoridades institucionales, el contenido del reporte científico completo del proyecto Hito 0. Ante cualquier discrepancia de detalle, prevalece el reporte científico, que documenta cada análisis, decisión metodológica y su fundamento en la literatura especializada.</em></p>
+
+</body>
+</html>
