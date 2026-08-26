@@ -6,19 +6,24 @@ Generador editorial del Diagnostico Hito 0 - Medición Atributos i+e.
 Pipeline:
     Markdown -> HTML semántico -> CSS paginado -> PDF (WeasyPrint)
 
-El diseño implementa y refina la especificación "Diseño maestro editorial — Diagnostico Hito 0, V4": A4, narrativa a dos columnas, portadillas de
-Parte, tipografía serif/sans jerarquizada, figuras complejas y tablas anchas a ancho completo, tablas pequeñas en una columna,
-paleta teal/naranja/grafito, captions editoriales, encabezados corridos,
-folios, índice navegable, marcadores PDF, flujo de columnas estrictamente secuencial y referencias específicas al final de cada Parte.
+El diseño implementa la especificación "Diseño Maestro Editorial Hito 0 — V5 ·
+Propuesta 1" (Diseno_Maestro_Editorial_Hito0_V5_Propuesta1.md): sistema
+híbrido monocromático (portada y portadillas con barras/nodos geométricos en
+grises), tres líneas editoriales asignadas por Parte (equilibrada/científica,
+técnica/analítica, conceptual/editorial), A4, narrativa a dos columnas,
+tipografía serif/sans jerarquizada, figuras complejas y tablas anchas a ancho
+completo, tablas pequeñas en una columna, captions editoriales, encabezados
+corridos, folios, índice navegable, marcadores PDF, flujo de columnas
+estrictamente secuencial y referencias específicas al final de cada Parte.
 
 Dependencias:
     pip install weasyprint markdown-it-py beautifulsoup4 pillow pymupdf
 
-Uso recomendado (PowerShell / VS Code):
-    python .\generar_reporte_hito0_editorial_v3.py \
-      --md ".\Reporte_Hito0_Integrado_MEJORADO_v13_REORDEN_FIGURAS_8_13.md" \
-      --figuras ".\01_figuras" \
-      --salida ".\Reporte_Hito0_Editorial_V3.pdf"
+Uso recomendado:
+    python3 generar_reporte_hito0_editorial_v5.py \
+      --md "Reporte_Hito0_Integrado_MEJORADO_v16.md" \
+      --figuras "01_figuras_AJUSTADAS_v16.zip" \
+      --salida "Reporte_Hito0_Editorial_V5.pdf"
 
 También acepta un ZIP en --figuras.
 
@@ -1894,6 +1899,28 @@ def safe_extract_zip(zip_path: Path, dest: Path) -> List[Path]:
     return extracted
 
 
+def _copy_as_grayscale(src: Path, dst: Path) -> None:
+    """Convierte una imagen ráster a escala de grises real.
+
+    El diseño maestro V5 exige que las figuras se integren "al sistema
+    monocromático" y el CSS declara ``filter: grayscale(100%)`` sobre
+    ``.figure img`` con esa intención. Se comprobó empíricamente que
+    WeasyPrint 69 ignora en silencio la propiedad ``filter`` (la imagen se
+    embebe sin alterar), así que ese único CSS no garantiza monocromatismo
+    si alguna figura futura no llega ya en grises. Se convierte aquí, en la
+    imagen misma, para que la garantía sea real y no dependa de que el
+    origen ya esté en grises.
+    """
+    with PILImage.open(src) as im:
+        if im.mode in ("RGBA", "LA") or ("transparency" in im.info):
+            rgba = im.convert("RGBA")
+            gray = rgba.convert("L").convert("RGBA")
+            gray.putalpha(rgba.getchannel("A"))
+            gray.save(dst)
+        else:
+            im.convert("L").save(dst)
+
+
 def collect_images(source: Path, dest: Path) -> Dict[str, Path]:
     """Copia/extracta imágenes y devuelve índice por basename en minúsculas."""
     dest.mkdir(parents=True, exist_ok=True)
@@ -1916,7 +1943,13 @@ def collect_images(source: Path, dest: Path) -> Dict[str, Path]:
             duplicates.setdefault(key, [index[key]]).append(p)
             continue
         target = figures_dir / p.name
-        shutil.copy2(p, target)
+        if p.suffix.lower() == ".svg":
+            # No hay una forma segura de forzar escala de grises en un SVG
+            # arbitrario sin parsearlo; se conserva tal cual (no se usan
+            # SVG en el material actual del reporte).
+            shutil.copy2(p, target)
+        else:
+            _copy_as_grayscale(p, target)
         index[key] = target
 
     if duplicates:
@@ -2485,7 +2518,11 @@ def build_part_opener(soup: BeautifulSoup, h1: Tag, nodes: List[Tag]) -> Tuple[T
     heading = soup.new_tag("h1", attrs={"class": "part-heading", "id": h1.get("id", slugify(text))})
     ns = soup.new_tag("span", attrs={"class": "part-number"}); ns.string = number
     nm = soup.new_tag("span", attrs={"class": "part-name"}); nm.string = name
-    heading.extend([ns, nm]); content.extend([kicker, heading]); opener.append(content)
+    # El espacio explícito entre ambos <span> no es visible (part-name es
+    # display:block), pero evita que WeasyPrint concatene sin separación el
+    # texto de ambos nodos al generar el título del marcador/outline del PDF
+    # (p. ej. "PARTE ICONTEXTO Y FUNDAMENTOS" en vez de "PARTE I CONTEXTO...").
+    heading.extend([ns, NavigableString(" "), nm]); content.extend([kicker, heading]); opener.append(content)
 
     visual = soup.new_tag("div", attrs={"class": "part-visual-v5"})
     for i in range(1, 6):
@@ -2868,7 +2905,7 @@ def split_render_units(final_html: str) -> Tuple[str, List[dict], Tag]:
                     "node": current,
                 })
             style_id = part_style_for_heading(current_part) if current_part else "1"
-        current = soup.new_tag("div", attrs={"class": f"part-body part-style-{style_id}"})
+            current = soup.new_tag("div", attrs={"class": f"part-body part-style-{style_id}"})
 
         for child in list(part_body.children):
             if not isinstance(child, Tag):
@@ -3234,7 +3271,7 @@ def merge_and_finalize(
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Genera el Reporte Hito 0 con el diseño editorial maestro V4 mediante HTML/CSS -> PDF."
+        description="Genera el Reporte Hito 0 con el diseño editorial maestro V5 mediante HTML/CSS -> PDF."
     )
     p.add_argument("--md", type=Path, help="Ruta al Markdown maestro")
     p.add_argument("--figuras", type=Path, help="Carpeta 01_figuras o ZIP de figuras")
